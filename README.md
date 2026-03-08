@@ -172,11 +172,36 @@ Access at `/admin` with a super_admin account.
 - **Recommendations** — Manage severity-based coping recommendations
 - **AI Settings** — Configure AI providers (OpenAI, Anthropic, Gemini, Azure)
 
+## AI Capabilities
+
+### Currently Implemented
+
+| Feature | Description |
+|---------|-------------|
+| **Sanad Chat Agent** | Conversational chatbot providing emotional support to students after screening, with context injected from their PHQ-9/GAD-7 results |
+| **Distress Analyzer** | NLP agent that analyzes free-text input to classify distress severity (minimal → severe) with confidence scores and emotional theme detection |
+| **Ensemble Scoring** | Merges questionnaire scores (70%) with AI NLP analysis (30%) for a more accurate combined severity assessment |
+| **Crisis Detection** | Real-time keyword-based crisis detection in chat messages with automatic admin notifications |
+| **Context Injection** | Converts screening results into natural language context to personalize chatbot conversations |
+
+### Planned Enhancements
+
+| Enhancement | Description |
+|-------------|-------------|
+| **AI-Powered Crisis Detection** | Replace keyword matching with an AI agent that understands context, sarcasm, and indirect expressions of self-harm — especially in Egyptian Arabic dialect (عامية) |
+| **Smart Recommendations** | AI-generated personalized coping strategies based on screening results and free-text input, instead of static score-range recommendations |
+| **Session Summaries for Admins** | AI agent that summarizes chat sessions so admin staff can quickly review flagged conversations |
+| **Follow-Up Check-Ins** | AI-generated personalized follow-up messages for students with moderate/severe scores |
+| **Arabic Dialect Understanding** | Enhanced DistressAnalyzer with better support for Egyptian colloquial Arabic vs. formal Arabic |
+| **Trend Analysis** | AI that detects worsening mental health patterns across multiple screening sessions for the same anonymous user |
+
 ## Research Context
 
 This project is part of an Applied Diploma in Artificial Intelligence at the Faculty of Artificial Intelligence, Kaferelsheikh University. The research addresses the critical gap between the high prevalence of mental health distress among Egyptian university students and the near-zero rate of help-seeking, as documented by Baklola et al. (BMC Psychiatry, 2023).
 
-The full research paper is available at [`public/Sanad_Mental_Health_Research.docx`](public/Sanad_Mental_Health_Research.docx).
+The full research paper is available in two formats:
+- [Markdown version](public/Sanad_Mental_Health_Research.md)
+- [Word document (.docx)](public/Sanad_Mental_Health_Research.docx)
 
 **Author:** Abdullah Ghanem Atya
 

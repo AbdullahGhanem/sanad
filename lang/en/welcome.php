@@ -52,6 +52,12 @@ return [
     'step3_title' => 'Chat or Download',
     'step3_desc' => 'Chat with Sanad AI for mental health support, or download your results as a PDF to share with a professional.',
 
+    // Research Context
+    'research_title' => 'Research Context',
+    'research_description' => 'This project is part of an Applied Diploma in Artificial Intelligence at the Faculty of Artificial Intelligence, Kaferelsheikh University. The research addresses the critical gap between the high prevalence of mental health distress among Egyptian university students and the near-zero rate of help-seeking, as documented by Baklola et al. (BMC Psychiatry, 2023).',
+    'research_ai_faculty' => 'Faculty of Artificial Intelligence, Kaferelsheikh University',
+    'research_university' => 'Kaferelsheikh University',
+
     // CTA
     'cta_title' => 'Ready to Check In on Yourself?',
     'cta_subtitle' => 'Taking a few minutes for your mental health is a sign of strength. Your results are anonymous and confidential.',
