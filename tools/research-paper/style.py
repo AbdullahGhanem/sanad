@@ -53,6 +53,14 @@ def _bottom_border(paragraph, color_hex="0D9488", size=12):
     pPr.append(pbdr)
 
 
+def set_rtl(paragraph):
+    """Mark a paragraph as right-to-left so Arabic runs order correctly."""
+    pPr = paragraph._p.get_or_add_pPr()
+    bidi = OxmlElement("w:bidi")
+    bidi.set(qn("w:val"), "1")
+    pPr.append(bidi)
+
+
 def setup_styles(doc):
     """Configure Normal + heading styles for the whole document."""
     normal = doc.styles["Normal"]
