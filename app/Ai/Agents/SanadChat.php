@@ -3,6 +3,7 @@
 namespace App\Ai\Agents;
 
 use App\Ai\Tools\GetCrisisResources;
+use App\Ai\Tools\GetMyScreeningResult;
 use App\Models\ChatMessage;
 use Laravel\Ai\Attributes\MaxSteps;
 use Laravel\Ai\Attributes\MaxTokens;
@@ -23,6 +24,8 @@ class SanadChat implements Agent, Conversational, HasTools
 
     private string $screeningContext = '';
 
+    private ?int $screeningSessionId = null;
+
     public function __construct(
         private string $sessionId = '',
         private string $language = 'en',
@@ -31,6 +34,13 @@ class SanadChat implements Agent, Conversational, HasTools
     public function withScreeningContext(string $context): self
     {
         $this->screeningContext = $context;
+
+        return $this;
+    }
+
+    public function forScreeningSession(?int $screeningSessionId): self
+    {
+        $this->screeningSessionId = $screeningSessionId;
 
         return $this;
     }
@@ -57,6 +67,7 @@ Core guidelines:
 - Encourage professional help when appropriate.
 - Be culturally sensitive to Egyptian culture and values.
 - If the student expresses suicidal thoughts, self-harm, or acute distress, you MUST call the get_crisis_resources tool to retrieve current crisis support details, then share them with the student. Never invent or recall hotline numbers from memory.
+- If the student asks about their screening results, scores, or which specific symptoms they reported, call the get_my_screening_result tool to retrieve the detailed breakdown. Never invent scores or answers.
 - Keep responses concise (2-4 paragraphs max).
 - Ask follow-up questions to understand the student's situation better.{$contextBlock}
 PROMPT;
@@ -71,6 +82,7 @@ PROMPT;
     {
         return [
             new GetCrisisResources($this->language),
+            new GetMyScreeningResult($this->screeningSessionId, $this->language),
         ];
     }
 

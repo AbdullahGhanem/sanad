@@ -107,7 +107,8 @@ class ChatInterface extends Component
     private function generateResponse(string $userMessage): void
     {
         try {
-            $agent = new SanadChat($this->chatSessionId, $this->language);
+            $agent = (new SanadChat($this->chatSessionId, $this->language))
+                ->forScreeningSession($this->screeningSessionId);
 
             // Inject screening context if available (US-08)
             if ($this->screeningSession) {

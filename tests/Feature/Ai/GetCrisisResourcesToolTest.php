@@ -22,8 +22,11 @@ class GetCrisisResourcesToolTest extends TestCase
     {
         $tools = iterator_to_array((new SanadChat)->tools());
 
-        $this->assertCount(1, $tools);
-        $this->assertInstanceOf(GetCrisisResources::class, $tools[0]);
+        $this->assertContainsOnlyInstancesOf(\Laravel\Ai\Contracts\Tool::class, $tools);
+        $this->assertNotEmpty(array_filter(
+            $tools,
+            fn ($tool) => $tool instanceof GetCrisisResources,
+        ));
     }
 
     public function test_handle_returns_active_resources_in_sort_order(): void
