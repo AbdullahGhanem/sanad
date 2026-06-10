@@ -2,18 +2,22 @@
 
 namespace App\Ai\Agents;
 
+use App\Ai\Tools\GetCrisisResources;
 use App\Models\ChatMessage;
+use Laravel\Ai\Attributes\MaxSteps;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\Conversational;
+use Laravel\Ai\Contracts\HasTools;
 use Laravel\Ai\Messages\Message;
 use Laravel\Ai\Promptable;
 use Stringable;
 
+#[MaxSteps(5)]
 #[MaxTokens(500)]
 #[Temperature(0.7)]
-class SanadChat implements Agent, Conversational
+class SanadChat implements Agent, Conversational, HasTools
 {
     use Promptable;
 
@@ -37,8 +41,6 @@ class SanadChat implements Agent, Conversational
             ? 'You MUST respond entirely in Arabic (Egyptian dialect preferred). Never respond in English. The student communicates in Arabic.'
             : 'Respond in English. The student prefers English communication.';
 
-        $hotline = \App\Models\CrisisHelpResource::hotlineNumber();
-
         $contextBlock = $this->screeningContext
             ? "\n\nScreening Context:\n{$this->screeningContext}\nUse this context to personalize your responses. Do not repeat questionnaire questions. Reference the student's situation naturally."
             : '';
@@ -54,10 +56,22 @@ Core guidelines:
 - Never diagnose or prescribe medication.
 - Encourage professional help when appropriate.
 - Be culturally sensitive to Egyptian culture and values.
-- If the student expresses suicidal thoughts or self-harm, immediately provide crisis resources (Egypt Mental Health Hotline: {$hotline}, Nefsy.com).
+- If the student expresses suicidal thoughts, self-harm, or acute distress, you MUST call the get_crisis_resources tool to retrieve current crisis support details, then share them with the student. Never invent or recall hotline numbers from memory.
 - Keep responses concise (2-4 paragraphs max).
 - Ask follow-up questions to understand the student's situation better.{$contextBlock}
 PROMPT;
+    }
+
+    /**
+     * Get the tools available to the agent.
+     *
+     * @return \Laravel\Ai\Contracts\Tool[]
+     */
+    public function tools(): iterable
+    {
+        return [
+            new GetCrisisResources($this->language),
+        ];
     }
 
     public function messages(): iterable
