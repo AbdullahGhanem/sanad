@@ -34,7 +34,7 @@ class SanadChat implements Agent, Conversational
     public function instructions(): Stringable|string
     {
         $languageInstruction = $this->language === 'ar'
-            ? 'Respond in Arabic. The student prefers Arabic communication.'
+            ? 'You MUST respond entirely in Arabic (Egyptian dialect preferred). Never respond in English. The student communicates in Arabic.'
             : 'Respond in English. The student prefers English communication.';
 
         $hotline = \App\Models\CrisisHelpResource::hotlineNumber();

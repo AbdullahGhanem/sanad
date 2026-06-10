@@ -79,11 +79,6 @@ class ChatInterface extends Component
         $userMessage = trim($this->message);
         $this->message = '';
 
-        // Detect language from first message if no messages yet
-        if ($this->chatMessages->isEmpty()) {
-            $this->detectLanguage($userMessage);
-        }
-
         // Check for crisis keywords
         $crisisService = app(CrisisDetectionService::class);
         $isCrisis = $crisisService->detectCrisisAnyLanguage($userMessage);
@@ -147,30 +142,13 @@ class ChatInterface extends Component
         }
     }
 
-    private function detectLanguage(string $text): void
-    {
-        $hasArabic = preg_match('/[\x{0600}-\x{06FF}]/u', $text);
-        $this->language = $hasArabic ? 'ar' : 'en';
-        app()->setLocale($this->language);
-        session()->put('locale', $this->language);
-    }
-
     public function acknowledgeCrisis(): void
     {
         $this->showCrisisOverlay = false;
     }
 
-    public function switchLanguage(string $language): void
-    {
-        $this->language = in_array($language, ['ar', 'en']) ? $language : 'en';
-        app()->setLocale($this->language);
-        session()->put('locale', $this->language);
-    }
-
     public function render(): \Illuminate\Contracts\View\View
     {
-        app()->setLocale($this->language);
-
         return view('livewire.chat.chat-interface');
     }
 }

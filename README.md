@@ -13,6 +13,8 @@ Mental health disorders among Egyptian university students have reached critical
 
 Sanad removes every barrier — it's **free**, **anonymous**, **Arabic-first**, and requires **no registration**.
 
+**Live Demo:** [https://sanad.gaitco.com](https://sanad.gaitco.com)
+
 ## Features
 
 | Feature | Description |

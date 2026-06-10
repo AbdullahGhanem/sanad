@@ -46,7 +46,7 @@ class ChatInterfaceTest extends TestCase
         $this->assertDatabaseHas('chat_messages', [
             'role' => 'user',
             'content' => 'I feel sad today',
-            'language' => 'en',
+            'language' => 'ar',
         ]);
     }
 
@@ -124,13 +124,17 @@ class ChatInterfaceTest extends TestCase
             ->assertSet('showCrisisOverlay', false);
     }
 
-    public function test_switch_language(): void
+    public function test_language_follows_app_locale(): void
     {
+        app()->setLocale('en');
+
         Livewire::test(ChatInterface::class)
-            ->call('switchLanguage', 'ar')
-            ->assertSet('language', 'ar')
-            ->call('switchLanguage', 'en')
             ->assertSet('language', 'en');
+
+        app()->setLocale('ar');
+
+        Livewire::test(ChatInterface::class)
+            ->assertSet('language', 'ar');
     }
 
     public function test_screening_context_passed_to_chat(): void
@@ -159,6 +163,8 @@ class ChatInterfaceTest extends TestCase
         SanadChat::fake(function () {
             throw new \Exception('API error');
         });
+
+        app()->setLocale('en');
 
         Livewire::test(ChatInterface::class)
             ->set('message', 'Hello')

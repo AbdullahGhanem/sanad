@@ -34,16 +34,8 @@
     x-init="$nextTick(() => scrollToBottom())"
 >
     {{-- Header --}}
-    <div class="mb-4 flex items-center justify-between">
+    <div class="mb-4">
         <flux:heading size="lg">{{ __('screening.chat_title') }}</flux:heading>
-        <div class="flex gap-2">
-            <flux:button size="sm" :variant="$language === 'en' ? 'primary' : 'ghost'" wire:click="switchLanguage('en')">
-                English
-            </flux:button>
-            <flux:button size="sm" :variant="$language === 'ar' ? 'primary' : 'ghost'" wire:click="switchLanguage('ar')">
-                العربية
-            </flux:button>
-        </div>
     </div>
 
     {{-- Messages Area --}}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<title>بطاقة الأرقام — سند</title>
+<style>
+  @page{ size:A4 portrait; margin:10mm; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Geeza Pro','Noto Naskh Arabic','SF Arabic','Helvetica Neue',sans-serif;color:#0f172a;font-size:10.5pt}
+  .card{display:flex;flex-direction:column;gap:7px;height:277mm}
+
+  .hd{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #0d9488;padding-bottom:7px}
+  .hd h1{font-size:18pt;font-weight:800}
+  .hd .t{font-size:9pt;color:#fff;background:#0d9488;border-radius:999px;padding:4px 12px;font-weight:700}
+
+  /* hero numbers band */
+  .hero{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .big{border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 8px;text-align:center;position:relative;overflow:hidden}
+  .big::before{content:"";position:absolute;top:0;right:0;left:0;height:4px;background:#0d9488}
+  .big.r::before{background:#e11d48}.big.a::before{background:#d97706}.big.i::before{background:#4f46e5}
+  .big .n{font-size:21pt;font-weight:800;line-height:1;letter-spacing:-1px}
+  .big .l{font-size:8pt;color:#64748b;margin-top:4px;line-height:1.3}
+
+  .sec-label{font-size:8.5pt;font-weight:800;color:#0f766e;letter-spacing:.5px;margin:2px 0 -1px}
+
+  /* slide strip */
+  .strip{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .row{display:flex;gap:8px;border:1px solid #eef2f7;border-radius:8px;padding:6px 9px;background:#fafbfc;break-inside:avoid}
+  .row .num{flex:0 0 26px;height:26px;border-radius:7px;background:#0f766e;color:#fff;font-weight:800;font-size:11pt;
+            display:flex;align-items:center;justify-content:center}
+  .row .body{flex:1}
+  .row .ttl{font-size:9.5pt;font-weight:800;color:#0f172a}
+  .row .key{font-size:9pt;color:#334155;margin-top:1px;line-height:1.45}
+  .row .key b{color:#0d9488;font-weight:800}
+
+  .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e2e8f0;padding-top:6px;font-size:8.5pt;color:#64748b}
+  .foot b{color:#0f172a}
+  .pace{background:#eef2ff;color:#3730a3;border-radius:6px;padding:3px 9px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="hd">
+    <h1>«سند» — بطاقة الأرقام السريعة</h1>
+    <span class="t">٥ دقائق · ١٢ شريحة</span>
+  </div>
+
+  <div class="sec-label">الأرقام الكبرى — احفظها</div>
+  <div class="hero">
+    <div class="big r"><div class="n">٦٨٫١٪</div><div class="l">ضائقة نفسية بين الطلاب</div></div>
+    <div class="big a"><div class="n">٩٠٫٣٪</div><div class="l">لم يطلبوا مساعدة قط</div></div>
+    <div class="big"><div class="n">٨٤٫٢٪</div><div class="l">دقة نموذج التصنيف</div></div>
+    <div class="big i"><div class="n">٧٩٪</div><div class="l">أول مصدر دعم في حياتهم</div></div>
+  </div>
+
+  <div class="sec-label">الشرائح بالترتيب — رقم المرساة لكل شريحة</div>
+  <div class="strip">
+    <div class="row"><div class="num">١</div><div class="body"><div class="ttl">المقدمة</div><div class="key">سند · عبد الله غانم · إشراف د. محمود شمس · كلية الذكاء الاصطناعي — كفر الشيخ</div></div></div>
+    <div class="row"><div class="num">٢</div><div class="body"><div class="ttl">المشكلة</div><div class="key"><b>٦٨٪</b> ضائقة · <b>٣٥٪</b> أفكار انتحارية · <b>٩٠٪</b> بلا مساعدة · <b>١٨</b> مستشفى فقط</div></div></div>
+    <div class="row"><div class="num">٣</div><div class="body"><div class="ttl">الفجوة البحثية</div><div class="key">لا أداة عربية ذكية · PHQ-9 / GAD-7 · CAMeLBERT · «هل نسدّ الفجوة؟»</div></div></div>
+    <div class="row"><div class="num">٤</div><div class="body"><div class="ttl">الأهداف</div><div class="key"><b>٥</b> أهداف: تطبيق ثنائي · محرّك تصنيف · توصيات · تقييم · بلا حواجز</div></div></div>
+    <div class="row"><div class="num">٥</div><div class="body"><div class="ttl">المنهجية</div><div class="key"><b>٣</b> مكوّنات · تقييم تجميعي <b>٧٠٪</b> استبيان + <b>٣٠٪</b> ذكاء اصطناعي</div></div></div>
+    <div class="row"><div class="num">٦</div><div class="body"><div class="ttl">محرّك اللغة</div><div class="key">CAMeLBERT-Mix · <b>٢٤٠٠</b> + <b>١٨٠</b> نص · تصنيف <b>رباعي</b> · يدعم العامية</div></div></div>
+    <div class="row"><div class="num">٧</div><div class="body"><div class="ttl">النظام الحيّ</div><div class="key">منتج يعمل الآن · <b>sanad.gaitco.com</b> · مجهول · ثنائي اللغة · RTL</div></div></div>
+    <div class="row"><div class="num">٨</div><div class="body"><div class="ttl">أداء النموذج</div><div class="key">دقة <b>٨٤٫٢٪</b> · F1 = <b>٠٫٨٤</b> · أقوى عند الطرفين · الفئة الخفيفة أصعب</div></div></div>
+    <div class="row"><div class="num">٩</div><div class="body"><div class="ttl">الدراسة الميدانية</div><div class="key"><b>١٢٠</b> طالبًا · <b>٩١٪</b> إكمال · <b>٦٦٫٧٪</b> ضائقة ≈ <b>٦٨٫١٪</b> وطنيًا · <b>١١٪</b> أزمة</div></div></div>
+    <div class="row"><div class="num">١٠</div><div class="body"><div class="ttl">الرضا والأثر</div><div class="key">سهولة <b>٤٫٥</b> · خصوصية <b>٤٫٤</b> · رضا <b>٨٨٪</b> · <b>٧٩٪</b> أول مصدر لهم</div></div></div>
+    <div class="row"><div class="num">١١</div><div class="body"><div class="ttl">الخلاصة + المستقبل</div><div class="key"><b>٨٤٪</b>/<b>٨٨٪</b>/<b>٧٩٪</b> · بيانات لهجة · ثقافي/ديني · تتبّع · تجربة سريرية · واتساب</div></div></div>
+    <div class="row"><div class="num">١٢</div><div class="body"><div class="ttl">الختام</div><div class="key">عرض حيّ · أسئلة · «شكرًا جزيلًا لحسن استماعكم»</div></div></div>
+  </div>
+
+  <div class="foot">
+    <div>إن ضاق الوقت: ادمج <b>٨–٩–١٠</b> → «دقة ٨٤٪، تطابق ميداني، رضا ٨٨٪»</div>
+    <div class="pace">أبطئ عند أرقام الشريحة ٢</div>
+  </div>
+
+</div>
+</body>
+</html>
