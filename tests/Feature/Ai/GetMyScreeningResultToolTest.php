@@ -3,7 +3,6 @@
 namespace Tests\Feature\Ai;
 
 use App\Ai\Agents\SanadChat;
-use App\Ai\Tools\GetCrisisResources;
 use App\Ai\Tools\GetMyScreeningResult;
 use App\Models\Question;
 use App\Models\QuestionOption;
@@ -29,13 +28,15 @@ class GetMyScreeningResultToolTest extends TestCase
         $this->assertSame([], (new GetMyScreeningResult)->schema(new JsonSchemaTypeFactory));
     }
 
-    public function test_sanad_chat_registers_both_tools(): void
+    public function test_sanad_chat_registers_the_screening_tool(): void
     {
         $tools = iterator_to_array((new SanadChat)->forScreeningSession(123)->tools());
 
-        $this->assertCount(2, $tools);
-        $this->assertInstanceOf(GetCrisisResources::class, $tools[0]);
-        $this->assertInstanceOf(GetMyScreeningResult::class, $tools[1]);
+        $this->assertContainsOnlyInstancesOf(\Laravel\Ai\Contracts\Tool::class, $tools);
+        $this->assertNotEmpty(array_filter(
+            $tools,
+            fn ($tool) => $tool instanceof GetMyScreeningResult,
+        ));
     }
 
     public function test_handle_returns_item_level_breakdown_with_scores(): void

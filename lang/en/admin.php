@@ -23,6 +23,8 @@ return [
     // Resources - Recommendations
     'recommendations' => 'Recommendations',
     'recommendation' => 'Recommendation',
+    'coping_exercises' => 'Coping Exercises',
+    'coping_exercise' => 'Coping Exercise',
 
     // Resources - Screening Sessions
     'sessions' => 'Sessions',

@@ -23,6 +23,8 @@ return [
     // Resources - Recommendations
     'recommendations' => 'التوصيات',
     'recommendation' => 'توصية',
+    'coping_exercises' => 'تمارين التأقلم',
+    'coping_exercise' => 'تمرين تأقلم',
 
     // Resources - Screening Sessions
     'sessions' => 'الجلسات',

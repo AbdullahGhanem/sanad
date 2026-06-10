@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             Gad7Seeder::class,
             CrisisKeywordSeeder::class,
             RecommendationSeeder::class,
+            CopingExerciseSeeder::class,
         ]);
     }
 }
