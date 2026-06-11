@@ -13,19 +13,28 @@
             <flux:text class="text-teal-800 dark:text-teal-200">{{ __('progress.request_pending') }}</flux:text>
         </div>
     @else
-        <div class="mb-6 flex flex-col items-start justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900 sm:flex-row sm:items-center">
-            <div>
-                <div class="font-medium">{{ __('progress.request_title') }}</div>
-                <flux:text class="text-sm text-zinc-500">{{ __('progress.request_body') }}</flux:text>
+        <div class="mb-6 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+            <div class="font-medium">{{ __('progress.request_title') }}</div>
+            <flux:text class="text-sm text-zinc-500">{{ __('progress.request_body') }}</flux:text>
+
+            <flux:textarea
+                wire:model="requestMessage"
+                :label="__('progress.request_message_label')"
+                :placeholder="__('progress.request_message_placeholder')"
+                rows="2"
+                class="mt-3"
+            />
+
+            <div class="mt-3 flex justify-end">
+                <flux:button
+                    variant="primary"
+                    wire:click="requestCounselor"
+                    wire:confirm="{{ __('progress.request_confirm') }}"
+                    wire:loading.attr="disabled"
+                >
+                    {{ __('progress.request_counselor') }}
+                </flux:button>
             </div>
-            <flux:button
-                variant="primary"
-                wire:click="requestCounselor"
-                wire:confirm="{{ __('progress.request_confirm') }}"
-                wire:loading.attr="disabled"
-            >
-                {{ __('progress.request_counselor') }}
-            </flux:button>
         </div>
     @endif
 

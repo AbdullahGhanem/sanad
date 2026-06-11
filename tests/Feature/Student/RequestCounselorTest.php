@@ -29,6 +29,48 @@ class RequestCounselorTest extends TestCase
         ]);
     }
 
+    public function test_optional_message_is_saved_as_the_referral_reason(): void
+    {
+        $student = User::factory()->create(['role' => 'student']);
+        $this->actingAs($student);
+
+        Livewire::test(MyProgress::class)
+            ->set('requestMessage', "I've been struggling to sleep and would like to talk.")
+            ->call('requestCounselor');
+
+        $this->assertDatabaseHas('referrals', [
+            'user_id' => $student->id,
+            'reason' => "I've been struggling to sleep and would like to talk.",
+        ]);
+    }
+
+    public function test_empty_message_falls_back_to_a_default_reason(): void
+    {
+        $student = User::factory()->create(['role' => 'student']);
+        $this->actingAs($student);
+
+        Livewire::test(MyProgress::class)
+            ->set('requestMessage', '   ')
+            ->call('requestCounselor');
+
+        $this->assertDatabaseHas('referrals', [
+            'user_id' => $student->id,
+            'reason' => 'Student-requested counselor support.',
+        ]);
+    }
+
+    public function test_overlong_message_is_rejected(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'student']));
+
+        Livewire::test(MyProgress::class)
+            ->set('requestMessage', str_repeat('a', 1001))
+            ->call('requestCounselor')
+            ->assertHasErrors('requestMessage');
+
+        $this->assertSame(0, \App\Models\Referral::query()->count());
+    }
+
     public function test_request_is_not_duplicated_while_one_is_open(): void
     {
         $student = User::factory()->create(['role' => 'student']);

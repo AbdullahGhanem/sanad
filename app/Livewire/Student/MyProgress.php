@@ -14,6 +14,8 @@ use Livewire\Component;
 #[Title('My Progress')]
 class MyProgress extends Component
 {
+    public string $requestMessage = '';
+
     /**
      * Retroactively link any anonymous screenings taken in this browser session
      * to the now-authenticated student, so their history is complete.
@@ -70,14 +72,19 @@ class MyProgress extends Component
             return;
         }
 
+        $this->validate(['requestMessage' => 'nullable|string|max:1000']);
+
+        $message = trim($this->requestMessage);
+
         Referral::create([
             'user_id' => Auth::id(),
             'anonymous_id' => session('guest_id'),
             'referred_by_id' => null,
             'status' => ReferralStatus::Pending,
-            'reason' => 'Student-requested counselor support.',
+            'reason' => $message !== '' ? $message : 'Student-requested counselor support.',
         ]);
 
+        $this->requestMessage = '';
         unset($this->hasPendingRequest);
     }
 
