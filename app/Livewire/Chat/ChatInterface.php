@@ -7,16 +7,20 @@ use App\Models\ChatMessage;
 use App\Models\CrisisHelpResource;
 use App\Models\ScreeningSession;
 use App\Services\CrisisDetectionService;
+use App\Services\TranscriptionService;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 #[Title('Chat with Sanad')]
 #[Layout('layouts.screening')]
 class ChatInterface extends Component
 {
+    use WithFileUploads;
+
     public string $language = 'ar';
 
     public string $message = '';
@@ -28,6 +32,8 @@ class ChatInterface extends Component
     public bool $isStreaming = false;
 
     public bool $showCrisisOverlay = false;
+
+    public $audioFile = null;
 
     public function mount(?int $session = null): void
     {
@@ -120,6 +126,29 @@ class ChatInterface extends Component
     {
         $this->isStreaming = false;
         unset($this->chatMessages);
+    }
+
+    /**
+     * Transcribe a recorded voice clip and place the text in the input for review.
+     */
+    public function updatedAudioFile(): void
+    {
+        $this->validate([
+            'audioFile' => 'file|mimetypes:audio/webm,audio/ogg,audio/mpeg,audio/mp4,audio/wav,audio/x-wav,video/webm|max:25600',
+        ]);
+
+        $transcript = app(TranscriptionService::class)->transcribe($this->audioFile, $this->language);
+
+        $this->audioFile = null;
+
+        if ($transcript !== null) {
+            $this->message = $transcript;
+            $this->dispatch('transcription-ready', text: $transcript);
+
+            return;
+        }
+
+        $this->dispatch('transcription-failed');
     }
 
     public function acknowledgeCrisis(): void

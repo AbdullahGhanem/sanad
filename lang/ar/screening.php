@@ -65,4 +65,6 @@ return [
     'consent_version' => 'الموافقة الإصدار :version',
     'consent_privacy_link' => 'سياسة الخصوصية',
     'consent_agree' => 'أفهم وأوافق',
+    'chat_record' => 'تسجيل رسالة صوتية',
+    'chat_stop_recording' => 'إيقاف التسجيل',
 ];

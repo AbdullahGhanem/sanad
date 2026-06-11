@@ -7,9 +7,22 @@
         isSending: false,
         isStreaming: false,
         streamingText: '',
+        isRecording: false,
+        isTranscribing: false,
+        mediaRecorder: null,
+        audioChunks: [],
         channel: '{{ $this->streamChannel }}',
         init() {
             this.$nextTick(() => this.scrollToBottom());
+
+            $wire.on('transcription-ready', (e) => {
+                this.isTranscribing = false;
+                this.inputText = (e?.text) ?? this.inputText;
+                this.$nextTick(() => this.$refs.messageInput?.focus());
+            });
+            $wire.on('transcription-failed', () => {
+                this.isTranscribing = false;
+            });
 
             if (window.Echo) {
                 window.Echo.channel(this.channel)
@@ -49,6 +62,43 @@
                     });
                 });
             });
+        },
+        async toggleRecording() {
+            if (this.isRecording) {
+                this.mediaRecorder?.stop();
+                return;
+            }
+
+            if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                this.audioChunks = [];
+                this.mediaRecorder = new MediaRecorder(stream);
+
+                this.mediaRecorder.addEventListener('dataavailable', (e) => {
+                    if (e.data.size > 0) this.audioChunks.push(e.data);
+                });
+
+                this.mediaRecorder.addEventListener('stop', () => {
+                    stream.getTracks().forEach((t) => t.stop());
+                    this.isRecording = false;
+
+                    const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                    if (blob.size === 0) return;
+
+                    const file = new File([blob], 'voice.webm', { type: 'audio/webm' });
+                    this.isTranscribing = true;
+                    $wire.upload('audioFile', file, () => {}, () => { this.isTranscribing = false; });
+                });
+
+                this.mediaRecorder.start();
+                this.isRecording = true;
+            } catch (e) {
+                this.isRecording = false;
+            }
         },
         scrollToBottom() {
             const el = document.getElementById('chat-messages');
@@ -127,6 +177,25 @@
 
     {{-- Input Area --}}
     <form @submit.prevent="sendOptimistic" class="mt-3 flex gap-2">
+        {{-- Voice input (record → transcribe → review) --}}
+        <button
+            type="button"
+            @click="toggleRecording"
+            :disabled="isSending || isStreaming || isTranscribing"
+            :class="isRecording ? 'border-red-500 bg-red-50 text-red-600 dark:bg-red-950' : 'border-zinc-200 bg-white text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800'"
+            class="flex w-12 items-center justify-center rounded-xl border transition disabled:opacity-50"
+            :aria-label="isRecording ? '{{ __('screening.chat_stop_recording') }}' : '{{ __('screening.chat_record') }}'"
+            title="{{ __('screening.chat_record') }}"
+        >
+            <svg x-show="isTranscribing" x-cloak class="h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span x-show="isRecording && !isTranscribing" class="h-3 w-3 animate-pulse rounded-sm bg-red-600"></span>
+            <svg x-show="!isRecording && !isTranscribing" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3m0-3a3 3 0 01-3-3V6a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+        </button>
         <input
             type="text"
             x-ref="messageInput"

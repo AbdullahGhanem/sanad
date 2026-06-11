@@ -65,4 +65,6 @@ return [
     'consent_version' => 'Consent v:version',
     'consent_privacy_link' => 'Privacy Policy',
     'consent_agree' => 'I understand and agree',
+    'chat_record' => 'Record a voice message',
+    'chat_stop_recording' => 'Stop recording',
 ];

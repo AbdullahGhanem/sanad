@@ -66,12 +66,12 @@ in a mental-health product, safety and accuracy outrank engagement.
    tool. _Native Laravel `whereVectorSimilarTo` is Postgres-only (pgvector `<=>`) and the app
    runs MySQL 8.0.33, so DB-side vector search is intentionally avoided; brute-force cosine is
    ample for a vetted KB and keeps content local._
-10. **Streaming + voice** — ✅ **Streaming built.** AI replies stream token-by-token over
-    **Laravel Reverb** websockets: `StreamChatResponse` queued job runs the agent via
-    `broadcastNow()` to a public `chat.{uuid}` channel and persists the final message in
-    `then()`; the Livewire chat subscribes with Echo and appends `.text_delta` chunks live,
-    finalizing on `.stream_end`. ⬜ _Remaining:_ Arabic speech-to-text (ElevenLabs already
-    configured) for lower-literacy access.
+10. **Streaming + voice** — ✅ **Built.** _Streaming:_ AI replies stream token-by-token over
+    **Laravel Reverb** websockets (`StreamChatResponse` → `chat.{uuid}` channel; Echo appends
+    `.text_delta`, finalizes on `.stream_end`). _Voice:_ a mic button records audio in the chat,
+    uploads it via Livewire, and `TranscriptionService` transcribes it through **ElevenLabs**
+    speech-to-text (`scribe_v2`, language-hinted) into the input for the student to review before
+    sending. Degrades gracefully to typing when the key is unset or transcription fails.
 11. **Self-help content library** — Filament-managed CBT/grounding/breathing modules; mood
     journal & daily check-ins with `DistressAnalyzer` auto-tagging.
 12. **Multi-university scale** — `spatie/laravel-multitenancy` per-institution isolation +
