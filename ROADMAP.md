@@ -75,8 +75,10 @@ in a mental-health product, safety and accuracy outrank engagement.
    **Referrals** Filament resource tracks the lifecycle — **Schedule** an appointment
    (`DateTimePicker` → `scheduled_at` + status scheduled), **Complete**, or **Decline** — with a
    `ReferralStatus` enum and audit-logged transitions. The Refer action hides once a referral
-   exists. _Next slices:_ notify the counseling center on referral, and a student-initiated
-   "request a counselor" path.
+   exists. On creation, a `ReferralObserver` **notifies the counseling center** — counselor staff
+   (excluding the referrer) get a mail + database + live broadcast toast, and an optional shared
+   `REFERRAL_CENTER_EMAIL` inbox is cc'd (channels adapt per notifiable). _Next slices:_ a
+   student-initiated "request a counselor" path.
 
 ## Phase 3 — LATER · AI depth & scale  *(next focus)*
 

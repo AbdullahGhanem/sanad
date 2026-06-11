@@ -4,12 +4,15 @@ namespace App\Models;
 
 use App\Enums\ReferralStatus;
 use App\Models\Concerns\Auditable;
+use App\Observers\ReferralObserver;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ObservedBy(ReferralObserver::class)]
 class Referral extends Model
 {
     /** @use HasFactory<\Database\Factories\ReferralFactory> */
