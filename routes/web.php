@@ -24,6 +24,7 @@ Route::get('screening/results/{session}/pdf', [\App\Http\Controllers\ScreeningPd
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::livewire('my-progress', \App\Livewire\Student\MyProgress::class)->name('progress');
 });
 
 require __DIR__.'/settings.php';

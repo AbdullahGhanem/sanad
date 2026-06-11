@@ -59,8 +59,13 @@ in a mental-health product, safety and accuracy outrank engagement.
    full counselor-note thread (author + relative time) above an add-note field, shared by the
    resource table and the queue widget. _Next slices:_ true broadcast-driven queue refresh, and
    longitudinal per-student history (item 6).
-6. **Longitudinal tracking** — optional student accounts linking sessions over time + a
-   student-facing progress chart. Keep the anonymous path intact.
+6. **Longitudinal tracking** — 🟡 **Started.** Screenings already link to the student when one is
+   logged in (`user_id`), anonymous otherwise. Added a student-facing **My Progress** page
+   (`/my-progress`): screening history, a latest-result + trend summary (PHQ-9 direction), and an
+   inline SVG sparkline — plus **retroactive claiming** of anonymous sessions taken in the same
+   browser session (by `guest_id`), so a student who screened before registering keeps that
+   history. Anonymous path intact (claiming only runs for an authed user). _Next slices:_
+   re-screening reminders (`reminder_enabled` already exists) and a richer chart.
 7. **Referral & appointment workflow** — route high-severity students to the counseling center.
 
 ## Phase 3 — LATER · AI depth & scale  *(next focus)*
