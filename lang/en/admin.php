@@ -29,6 +29,13 @@ return [
     'knowledge_article' => 'Knowledge Article',
     'audit_log' => 'Audit Log',
     'audit_entry' => 'Audit Entry',
+    'crisis_queue' => 'Crisis Queue',
+    'crisis_open' => 'Open Crises',
+    'crisis_open_hint' => 'Awaiting a counselor',
+    'crisis_in_progress' => 'In Progress',
+    'crisis_in_progress_hint' => 'Acknowledged, not yet resolved',
+    'crisis_resolved_week' => 'Resolved (7 days)',
+    'crisis_resolved_week_hint' => 'Closed this week',
 
     // Resources - Screening Sessions
     'sessions' => 'Sessions',

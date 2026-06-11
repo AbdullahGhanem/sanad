@@ -52,9 +52,11 @@ in a mental-health product, safety and accuracy outrank engagement.
    role with panel access (super-admin-only resources stay locked via existing policies). Crisis
    events now carry a triage state — `status` (open/acknowledged/resolved) + `handled_by` +
    `handled_at` — worked from the Filament crisis queue via Acknowledge/Resolve actions, plus
-   `CounselorNote`s. Triage changes flow into the audit trail automatically. _Next slices:_ a
-   dedicated counselor dashboard page with widgets (flagged-student queue, severity trends), a
-   notes-thread view, and consuming the live crisis broadcast for real-time queue updates.
+   `CounselorNote`s. Triage changes flow into the audit trail automatically. The **dashboard**
+   now shows a `CrisisTriageStats` overview (open / in-progress / resolved-this-week) and a
+   `CrisisQueue` table widget — the unresolved queue with the same triage actions inline, polling
+   every 30s (the Phase 1 broadcast already gives instant toasts). _Next slices:_ a notes-thread
+   view, true broadcast-driven queue refresh, and longitudinal per-student history (item 6).
 6. **Longitudinal tracking** — optional student accounts linking sessions over time + a
    student-facing progress chart. Keep the anonymous path intact.
 7. **Referral & appointment workflow** — route high-severity students to the counseling center.

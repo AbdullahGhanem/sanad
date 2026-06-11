@@ -29,6 +29,13 @@ return [
     'knowledge_article' => 'مقال معرفي',
     'audit_log' => 'سجل التدقيق',
     'audit_entry' => 'إدخال تدقيق',
+    'crisis_queue' => 'قائمة الأزمات',
+    'crisis_open' => 'أزمات مفتوحة',
+    'crisis_open_hint' => 'بانتظار مختص',
+    'crisis_in_progress' => 'قيد المعالجة',
+    'crisis_in_progress_hint' => 'تم استلامها ولم تُحل بعد',
+    'crisis_resolved_week' => 'تم حلها (7 أيام)',
+    'crisis_resolved_week_hint' => 'أُغلقت هذا الأسبوع',
 
     // Resources - Screening Sessions
     'sessions' => 'الجلسات',

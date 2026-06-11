@@ -59,34 +59,44 @@ class CrisisEventsTable
                 SelectFilter::make('status')
                     ->options(CrisisStatus::options()),
             ])
-            ->recordActions([
-                Action::make('acknowledge')
-                    ->icon(Heroicon::OutlinedEye)
-                    ->color('warning')
-                    ->requiresConfirmation()
-                    ->visible(fn (CrisisEvent $record): bool => $record->status === CrisisStatus::Open)
-                    ->action(fn (CrisisEvent $record) => $record->acknowledge(auth()->user())),
-                Action::make('resolve')
-                    ->icon(Heroicon::OutlinedCheckCircle)
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->visible(fn (CrisisEvent $record): bool => ! $record->isResolved())
-                    ->action(fn (CrisisEvent $record) => $record->resolve(auth()->user())),
-                Action::make('addNote')
-                    ->label('Add note')
-                    ->icon(Heroicon::OutlinedPencilSquare)
-                    ->color('gray')
-                    ->modalHeading('Counselor note')
-                    ->schema([
-                        Textarea::make('body')
-                            ->label('Note')
-                            ->required()
-                            ->rows(3),
-                    ])
-                    ->action(fn (array $data, CrisisEvent $record) => $record->notes()->create([
-                        'user_id' => auth()->id(),
-                        'body' => $data['body'],
-                    ])),
-            ]);
+            ->recordActions(self::triageActions());
+    }
+
+    /**
+     * Triage actions shared by the crisis-events resource and the counselor queue widget.
+     *
+     * @return array<int, Action>
+     */
+    public static function triageActions(): array
+    {
+        return [
+            Action::make('acknowledge')
+                ->icon(Heroicon::OutlinedEye)
+                ->color('warning')
+                ->requiresConfirmation()
+                ->visible(fn (CrisisEvent $record): bool => $record->status === CrisisStatus::Open)
+                ->action(fn (CrisisEvent $record) => $record->acknowledge(auth()->user())),
+            Action::make('resolve')
+                ->icon(Heroicon::OutlinedCheckCircle)
+                ->color('success')
+                ->requiresConfirmation()
+                ->visible(fn (CrisisEvent $record): bool => ! $record->isResolved())
+                ->action(fn (CrisisEvent $record) => $record->resolve(auth()->user())),
+            Action::make('addNote')
+                ->label('Add note')
+                ->icon(Heroicon::OutlinedPencilSquare)
+                ->color('gray')
+                ->modalHeading('Counselor note')
+                ->schema([
+                    Textarea::make('body')
+                        ->label('Note')
+                        ->required()
+                        ->rows(3),
+                ])
+                ->action(fn (array $data, CrisisEvent $record) => $record->notes()->create([
+                    'user_id' => auth()->id(),
+                    'body' => $data['body'],
+                ])),
+        ];
     }
 }
