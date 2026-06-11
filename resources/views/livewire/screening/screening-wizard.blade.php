@@ -1,5 +1,19 @@
 <div dir="{{ $this->isRtl ? 'rtl' : 'ltr' }}" class="mx-auto max-w-2xl px-4 py-8">
-    @if ($isCompleted)
+    @if ($needsConsent)
+        {{-- Consent gate (must agree before screening) --}}
+        <div class="rounded-xl border border-zinc-200 bg-white p-8 dark:border-zinc-700 dark:bg-zinc-900">
+            <flux:heading size="lg" class="mb-4">{{ __('screening.consent_title') }}</flux:heading>
+            <flux:text class="mb-4 whitespace-pre-line">{{ __('screening.consent_body') }}</flux:text>
+            <div class="mb-6 text-xs text-zinc-400">
+                {{ __('screening.consent_version', ['version' => config('consent.version')]) }}
+                ·
+                <a href="{{ route('privacy') }}" class="underline" target="_blank">{{ __('screening.consent_privacy_link') }}</a>
+            </div>
+            <flux:button variant="primary" class="w-full" wire:click="giveConsent">
+                {{ __('screening.consent_agree') }}
+            </flux:button>
+        </div>
+    @elseif ($isCompleted)
         {{-- Results Summary --}}
         <div class="rounded-xl border border-green-200 bg-green-50 p-8 text-center dark:border-green-800 dark:bg-green-950">
             <div class="mb-4 text-4xl">✓</div>

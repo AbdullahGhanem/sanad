@@ -60,4 +60,9 @@ return [
     'severity_moderate' => 'Moderate',
     'severity_moderately_severe' => 'Moderately Severe',
     'severity_severe' => 'Severe',
+    'consent_title' => 'Before you begin',
+    'consent_body' => "This is a brief, confidential mental-health self-screening — not a diagnosis. Your answers are stored anonymously and used only to give you tailored support and resources. You can stop at any time.\n\nBy continuing, you agree to this and to our handling of your data.",
+    'consent_version' => 'Consent v:version',
+    'consent_privacy_link' => 'Privacy Policy',
+    'consent_agree' => 'I understand and agree',
 ];

@@ -3,6 +3,7 @@
 namespace App\Livewire\Screening;
 
 use App\Ai\Agents\DistressAnalyzer;
+use App\Models\ConsentRecord;
 use App\Models\CrisisHelpResource;
 use App\Models\Questionnaire;
 use App\Models\ScreeningSession;
@@ -43,9 +44,15 @@ class ScreeningWizard extends Component
 
     public bool $isAnalyzing = false;
 
+    public bool $needsConsent = false;
+
     public function mount(): void
     {
         $this->language = app()->getLocale();
+
+        $guestId = (string) session('guest_id', '');
+        $this->needsConsent = $guestId !== ''
+            && ! ConsentRecord::hasConsented($guestId, config('consent.version'));
 
         $saved = session('screening_wizard_state');
 
@@ -58,6 +65,17 @@ class ScreeningWizard extends Component
         } else {
             $this->initializeAnswers();
         }
+    }
+
+    public function giveConsent(): void
+    {
+        $guestId = (string) session('guest_id', '');
+
+        if ($guestId !== '') {
+            ConsentRecord::record($guestId, config('consent.version'), $this->language, request()->ip());
+        }
+
+        $this->needsConsent = false;
     }
 
     private function saveStateToSession(): void

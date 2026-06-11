@@ -32,7 +32,12 @@ in a mental-health product, safety and accuracy outrank engagement.
    role changes). Whitelists protect secrets/bloat (no `api_key`, no embedding vectors); guardrail
    blocks are logged to the trail too. A **read-only** Filament "Audit Log" resource lets admins
    review who changed what, when. (Spatie-first, not hand-rolled.)
-3. **Consent & data retention** — explicit versioned consent before screening + automated purge job.
+3. **Consent & data retention** — ✅ **Built.** A **versioned** consent gate (`config/consent.php`)
+   blocks the screening wizard until the anonymous student agrees; agreement is recorded in
+   `consent_records` (bumping the version forces re-consent). An `app:purge-expired-data` command
+   (scheduled daily) deletes anonymous screening + chat PII past its `config/retention.php` window —
+   DB cascades clean child rows — while crisis events and consent records are kept by default
+   (null = safety/legal hold). Purges are written to the audit trail.
 4. **AI output guardrail** — ✅ **Built.** Every `SanadChat` reply is moderated **before** it
    reaches the student (moderate-first): `StreamChatResponse` now generates the full reply, runs
    `ResponseGuardrailService` (a deterministic dosage/medication **rule** layer + a Claude
