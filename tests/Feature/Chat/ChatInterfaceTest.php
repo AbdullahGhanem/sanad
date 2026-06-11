@@ -3,10 +3,12 @@
 namespace Tests\Feature\Chat;
 
 use App\Ai\Agents\SanadChat;
+use App\Jobs\StreamChatResponse;
 use App\Livewire\Chat\ChatInterface;
 use App\Models\CrisisKeyword;
 use App\Models\ScreeningSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -61,6 +63,30 @@ class ChatInterfaceTest extends TestCase
         $this->assertDatabaseHas('chat_messages', [
             'role' => 'assistant',
         ]);
+    }
+
+    public function test_send_message_dispatches_streaming_job_and_marks_streaming(): void
+    {
+        Queue::fake();
+
+        Livewire::test(ChatInterface::class)
+            ->set('message', 'I feel sad today')
+            ->call('sendMessage')
+            ->assertSet('isStreaming', true);
+
+        Queue::assertPushed(
+            StreamChatResponse::class,
+            fn (StreamChatResponse $job): bool => $job->userMessage === 'I feel sad today'
+                && $job->language === 'ar',
+        );
+    }
+
+    public function test_finish_streaming_resets_state(): void
+    {
+        Livewire::test(ChatInterface::class)
+            ->set('isStreaming', true)
+            ->call('finishStreaming')
+            ->assertSet('isStreaming', false);
     }
 
     public function test_send_message_validates_required(): void

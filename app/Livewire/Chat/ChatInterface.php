@@ -2,11 +2,10 @@
 
 namespace App\Livewire\Chat;
 
-use App\Ai\Agents\SanadChat;
+use App\Jobs\StreamChatResponse;
 use App\Models\ChatMessage;
 use App\Models\CrisisHelpResource;
 use App\Models\ScreeningSession;
-use App\Services\ContextInjectionService;
 use App\Services\CrisisDetectionService;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -29,8 +28,6 @@ class ChatInterface extends Component
     public bool $isStreaming = false;
 
     public bool $showCrisisOverlay = false;
-
-    public string $streamedResponse = '';
 
     public function mount(?int $session = null): void
     {
@@ -70,6 +67,12 @@ class ChatInterface extends Component
         return ScreeningSession::find($this->screeningSessionId);
     }
 
+    #[Computed]
+    public function streamChannel(): string
+    {
+        return 'chat.'.$this->chatSessionId;
+    }
+
     public function sendMessage(): void
     {
         $this->validate([
@@ -100,47 +103,21 @@ class ChatInterface extends Component
             $this->showCrisisOverlay = true;
         }
 
-        // Generate AI response
-        $this->generateResponse($userMessage);
+        // Stream the AI response asynchronously over the chat's websocket channel.
+        $this->isStreaming = true;
+
+        StreamChatResponse::dispatch(
+            $this->chatSessionId,
+            $this->screeningSessionId,
+            $userMessage,
+            $this->language,
+        );
     }
 
-    private function generateResponse(string $userMessage): void
+    public function finishStreaming(): void
     {
-        try {
-            $agent = (new SanadChat($this->chatSessionId, $this->language))
-                ->forScreeningSession($this->screeningSessionId);
-
-            // Inject screening context if available (US-08)
-            if ($this->screeningSession) {
-                $contextService = app(ContextInjectionService::class);
-                $context = $contextService->buildContext($this->screeningSession, $this->language);
-                $agent->withScreeningContext($context);
-            }
-
-            $response = $agent->prompt($userMessage);
-
-            ChatMessage::create([
-                'session_id' => $this->chatSessionId,
-                'screening_session_id' => $this->screeningSessionId,
-                'role' => 'assistant',
-                'content' => (string) $response,
-                'language' => $this->language,
-                'detected_crisis' => false,
-            ]);
-        } catch (\Throwable $e) {
-            $fallback = $this->language === 'ar'
-                ? 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.'
-                : 'Sorry, something went wrong. Please try again.';
-
-            ChatMessage::create([
-                'session_id' => $this->chatSessionId,
-                'screening_session_id' => $this->screeningSessionId,
-                'role' => 'assistant',
-                'content' => $fallback,
-                'language' => $this->language,
-                'detected_crisis' => false,
-            ]);
-        }
+        $this->isStreaming = false;
+        unset($this->chatMessages);
     }
 
     public function acknowledgeCrisis(): void

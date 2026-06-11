@@ -5,12 +5,37 @@
         inputText: '',
         pendingMessage: '',
         isSending: false,
+        isStreaming: false,
+        streamingText: '',
+        channel: '{{ $this->streamChannel }}',
+        init() {
+            this.$nextTick(() => this.scrollToBottom());
+
+            if (window.Echo) {
+                window.Echo.channel(this.channel)
+                    .listen('.text_delta', (e) => {
+                        this.isSending = false;
+                        this.isStreaming = true;
+                        this.streamingText += e.delta ?? '';
+                        this.$nextTick(() => this.scrollToBottom());
+                    })
+                    .listen('.stream_end', () => {
+                        $wire.finishStreaming().then(() => {
+                            this.streamingText = '';
+                            this.isStreaming = false;
+                            this.isSending = false;
+                            this.$nextTick(() => this.scrollToBottom());
+                        });
+                    });
+            }
+        },
         sendOptimistic() {
             const text = this.inputText.trim();
-            if (!text || this.isSending) return;
+            if (!text || this.isSending || this.isStreaming) return;
 
             this.pendingMessage = text;
             this.isSending = true;
+            this.streamingText = '';
             this.inputText = '';
 
             this.$nextTick(() => this.scrollToBottom());
@@ -18,7 +43,6 @@
             $wire.set('message', text).then(() => {
                 $wire.sendMessage().then(() => {
                     this.pendingMessage = '';
-                    this.isSending = false;
                     this.$nextTick(() => {
                         this.scrollToBottom();
                         this.$refs.messageInput.focus();
@@ -31,7 +55,6 @@
             if (el) el.scrollTop = el.scrollHeight;
         }
     }"
-    x-init="$nextTick(() => scrollToBottom())"
 >
     {{-- Header --}}
     <div class="mb-4">
@@ -74,8 +97,17 @@
             </div>
         </template>
 
-        {{-- Typing indicator --}}
-        <template x-if="isSending">
+        {{-- Live streaming assistant message (tokens arrive over websockets) --}}
+        <template x-if="isStreaming && streamingText">
+            <div class="flex {{ $this->isRtl ? 'justify-end' : 'justify-start' }}">
+                <div class="max-w-[80%] rounded-2xl bg-zinc-100 px-4 py-3 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
+                    <div class="whitespace-pre-wrap text-sm" x-text="streamingText"></div>
+                </div>
+            </div>
+        </template>
+
+        {{-- Typing indicator (until the first token arrives) --}}
+        <template x-if="isSending && !streamingText">
             <div class="flex {{ $this->isRtl ? 'justify-end' : 'justify-start' }}">
                 <div class="rounded-2xl bg-zinc-100 px-4 py-3 dark:bg-zinc-800">
                     <div class="flex gap-1">
@@ -103,11 +135,11 @@
             maxlength="1000"
             class="flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-teal-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
             autocomplete="off"
-            :disabled="isSending"
+            :disabled="isSending || isStreaming"
         />
-        <flux:button type="submit" variant="primary" ::disabled="isSending">
-            <span x-show="!isSending">{{ __('screening.chat_send') }}</span>
-            <span x-show="isSending" x-cloak>
+        <flux:button type="submit" variant="primary" ::disabled="isSending || isStreaming">
+            <span x-show="!isSending && !isStreaming">{{ __('screening.chat_send') }}</span>
+            <span x-show="isSending || isStreaming" x-cloak>
                 <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>

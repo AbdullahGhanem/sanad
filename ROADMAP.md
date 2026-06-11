@@ -47,8 +47,12 @@ in a mental-health product, safety and accuracy outrank engagement.
    tool. _Native Laravel `whereVectorSimilarTo` is Postgres-only (pgvector `<=>`) and the app
    runs MySQL 8.0.33, so DB-side vector search is intentionally avoided; brute-force cosine is
    ample for a vetted KB and keeps content local._
-10. **Streaming + voice** — token streaming in the Livewire chat; Arabic speech-to-text
-    (ElevenLabs already configured) for lower-literacy access.
+10. **Streaming + voice** — ✅ **Streaming built.** AI replies stream token-by-token over
+    **Laravel Reverb** websockets: `StreamChatResponse` queued job runs the agent via
+    `broadcastNow()` to a public `chat.{uuid}` channel and persists the final message in
+    `then()`; the Livewire chat subscribes with Echo and appends `.text_delta` chunks live,
+    finalizing on `.stream_end`. ⬜ _Remaining:_ Arabic speech-to-text (ElevenLabs already
+    configured) for lower-literacy access.
 11. **Self-help content library** — Filament-managed CBT/grounding/breathing modules; mood
     journal & daily check-ins with `DistressAnalyzer` auto-tagging.
 12. **Multi-university scale** — `spatie/laravel-multitenancy` per-institution isolation +
@@ -58,7 +62,7 @@ in a mental-health product, safety and accuracy outrank engagement.
 
 ## Cross-cutting (alongside all phases)
 
-- **Realtime infra**: Laravel Reverb (websockets) — prerequisite for crisis takeover,
-  streaming, and live counselor alerts.
+- **Realtime infra**: ✅ Laravel Reverb (websockets) installed for response streaming — also the
+  foundation for the Phase 1 crisis takeover and live counselor alerts.
 - **Abuse / rate limiting** on the chat endpoint (cost + safety).
 - **Test coverage** for every crisis path — safety logic must be fully covered.
