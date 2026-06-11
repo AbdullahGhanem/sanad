@@ -30,6 +30,7 @@ class UserForm
                 Select::make('role')
                     ->options([
                         'student' => 'Student',
+                        'counselor' => 'Counselor',
                         'university_admin' => 'University Admin',
                         'super_admin' => 'Super Admin',
                     ])

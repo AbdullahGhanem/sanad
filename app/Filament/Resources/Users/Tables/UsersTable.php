@@ -30,6 +30,7 @@ class UsersTable
                     ->color(fn (string $state): string => match ($state) {
                         'super_admin' => 'danger',
                         'university_admin' => 'warning',
+                        'counselor' => 'info',
                         default => 'gray',
                     })
                     ->sortable(),
@@ -49,6 +50,7 @@ class UsersTable
                 SelectFilter::make('role')
                     ->options([
                         'student' => 'Student',
+                        'counselor' => 'Counselor',
                         'university_admin' => 'University Admin',
                         'super_admin' => 'Super Admin',
                     ]),

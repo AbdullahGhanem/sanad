@@ -63,6 +63,13 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function counselor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'counselor',
+        ]);
+    }
+
     /**
      * Indicate that the model has two-factor authentication configured.
      */

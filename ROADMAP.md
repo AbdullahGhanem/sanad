@@ -48,8 +48,13 @@ in a mental-health product, safety and accuracy outrank engagement.
 
 ## Phase 2 — NEXT · Counselor side & continuity of care
 
-5. **Roles + Counselor dashboard** — seed `admin`/`counselor`/`student`; counselor Filament
-   panel with flagged-student queue, crisis events, session notes.
+5. **Roles + Counselor dashboard** — 🟡 **Started (crisis triage slice).** Added a `counselor`
+   role with panel access (super-admin-only resources stay locked via existing policies). Crisis
+   events now carry a triage state — `status` (open/acknowledged/resolved) + `handled_by` +
+   `handled_at` — worked from the Filament crisis queue via Acknowledge/Resolve actions, plus
+   `CounselorNote`s. Triage changes flow into the audit trail automatically. _Next slices:_ a
+   dedicated counselor dashboard page with widgets (flagged-student queue, severity trends), a
+   notes-thread view, and consuming the live crisis broadcast for real-time queue updates.
 6. **Longitudinal tracking** — optional student accounts linking sessions over time + a
    student-facing progress chart. Keep the anonymous path intact.
 7. **Referral & appointment workflow** — route high-severity students to the counseling center.

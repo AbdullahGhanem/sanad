@@ -72,7 +72,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return in_array($this->role, ['super_admin', 'university_admin']);
+        return in_array($this->role, ['super_admin', 'university_admin', 'counselor']);
     }
 
     public function isSuperAdmin(): bool
@@ -83,6 +83,19 @@ class User extends Authenticatable implements FilamentUser
     public function isUniversityAdmin(): bool
     {
         return $this->role === 'university_admin';
+    }
+
+    public function isCounselor(): bool
+    {
+        return $this->role === 'counselor';
+    }
+
+    /**
+     * Administrators may manage users and system configuration; counselors may not.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->isSuperAdmin() || $this->isUniversityAdmin();
     }
 
     public function screeningSessions(): HasMany
