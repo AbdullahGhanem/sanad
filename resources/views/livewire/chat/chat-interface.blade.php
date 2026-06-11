@@ -131,7 +131,11 @@
                     ? 'bg-teal-500 text-white'
                     : 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200'
                 }}">
-                    <div class="whitespace-pre-wrap text-sm">{{ $msg->content }}</div>
+                    @if ($msg->role === 'assistant')
+                        <div class="text-sm [&_p]:my-2 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0 [&_ul]:my-2 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:ps-5 [&_li]:my-0.5 [&_strong]:font-semibold [&_hr]:my-3 [&_hr]:border-zinc-300 dark:[&_hr]:border-zinc-600 [&_a]:underline">{!! $msg->rendered_content !!}</div>
+                    @else
+                        <div class="whitespace-pre-wrap text-sm">{{ $msg->content }}</div>
+                    @endif
                     @if ($msg->detected_crisis)
                         <div class="mt-1 text-xs {{ $msg->role === 'user' ? 'text-teal-100' : 'text-red-500' }}">
                             ⚠️
