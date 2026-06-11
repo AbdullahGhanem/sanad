@@ -39,8 +39,14 @@ in a mental-health product, safety and accuracy outrank engagement.
 
 8. **Tool-using chat agent** — give `SanadChat` tools: fetch the student's own screening
    result, pull a relevant CBT exercise, surface crisis resources on demand.
-9. **RAG over vetted psychoeducation** — counselor-curated knowledge base + embeddings
-   (Voyage/Jina/OpenAI already configured in `config/ai.php`) so answers are sourced, not invented.
+9. **RAG over vetted psychoeducation** — ✅ **Built.** Counselor-curated knowledge base so answers
+   are sourced, not invented. **Architecture:** a Filament-managed `KnowledgeArticle`
+   model storing its embedding as a JSON column, generated via `Str::of(...)->toEmbeddings()`
+   using **Voyage AI** (`VOYAGEAI_API_KEY`); retrieval ranks by **cosine similarity computed
+   in PHP** over the small curated set, surfaced to `SanadChat` as a `searchPsychoeducation`
+   tool. _Native Laravel `whereVectorSimilarTo` is Postgres-only (pgvector `<=>`) and the app
+   runs MySQL 8.0.33, so DB-side vector search is intentionally avoided; brute-force cosine is
+   ample for a vetted KB and keeps content local._
 10. **Streaming + voice** — token streaming in the Livewire chat; Arabic speech-to-text
     (ElevenLabs already configured) for lower-literacy access.
 11. **Self-help content library** — Filament-managed CBT/grounding/breathing modules; mood

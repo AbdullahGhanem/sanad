@@ -25,6 +25,8 @@ return [
     'recommendation' => 'توصية',
     'coping_exercises' => 'تمارين التأقلم',
     'coping_exercise' => 'تمرين تأقلم',
+    'knowledge_articles' => 'مقالات المعرفة',
+    'knowledge_article' => 'مقال معرفي',
 
     // Resources - Screening Sessions
     'sessions' => 'الجلسات',

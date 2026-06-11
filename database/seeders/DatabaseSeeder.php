@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             CrisisKeywordSeeder::class,
             RecommendationSeeder::class,
             CopingExerciseSeeder::class,
+            KnowledgeArticleSeeder::class,
         ]);
     }
 }
