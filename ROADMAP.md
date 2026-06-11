@@ -68,7 +68,9 @@ in a mental-health product, safety and accuracy outrank engagement.
    reminders** are built: `app:send-screening-reminders` (scheduled daily) emails opted-in,
    verified students who last screened beyond `config/reminders.php`'s interval; the interval
    doubles as the cooldown (`last_reminded_at`) so a student is nudged at most once per period,
-   and a Profile-settings toggle lets them opt out. _Next slices:_ a richer interactive chart.
+   and a Profile-settings toggle lets them opt out. The email is **localized**: `User` implements
+   `HasLocalePreference` (a per-user `locale`, captured at registration and on language switch), so
+   Laravel renders the reminder in the student's language. _Next slices:_ a richer interactive chart.
 7. **Referral & appointment workflow** — 🟡 **Started.** A counselor working a crisis event can
    **Refer** the student to the counseling center, creating a `Referral` (status pending) that
    copies the `anonymous_id` so it survives even if the crisis is later purged. A read-only

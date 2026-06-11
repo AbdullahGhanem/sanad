@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Concerns\Auditable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,7 +16,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasLocalePreference
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use Auditable, HasFactory, HasRoles, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
@@ -41,6 +42,7 @@ class User extends Authenticatable implements FilamentUser
         'role',
         'faculty_id',
         'reminder_enabled',
+        'locale',
     ];
 
     /**
@@ -69,6 +71,14 @@ class User extends Authenticatable implements FilamentUser
             'last_screened_at' => 'datetime',
             'last_reminded_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Locale used to render notifications (mail, etc.) for this user.
+     */
+    public function preferredLocale(): ?string
+    {
+        return $this->locale ?? config('app.fallback_locale');
     }
 
     public function canAccessPanel(Panel $panel): bool

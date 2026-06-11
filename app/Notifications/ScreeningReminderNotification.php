@@ -22,10 +22,10 @@ class ScreeningReminderNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('A gentle check-in from Sanad')
-            ->greeting('Hi '.($notifiable->name ?? '').',')
-            ->line("It's been a while since your last mental-health check-in. Taking a few minutes to screen again can help you notice how you're doing over time.")
-            ->action('Take a screening', route('screening'))
-            ->line('You can turn these reminders off any time in your settings. You are not alone — support is always here.');
+            ->subject(__('reminders.subject'))
+            ->greeting(__('reminders.greeting', ['name' => $notifiable->name ?? '']))
+            ->line(__('reminders.intro'))
+            ->action(__('reminders.action'), route('screening'))
+            ->line(__('reminders.footer'));
     }
 }

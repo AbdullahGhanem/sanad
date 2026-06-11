@@ -8,6 +8,10 @@ Route::view('/', 'welcome')->name('home');
 Route::get('language/{locale}', function (string $locale) {
     if (in_array($locale, ['ar', 'en'])) {
         session()->put('locale', $locale);
+
+        if ($user = request()->user()) {
+            $user->update(['locale' => $locale]);
+        }
     }
 
     return redirect()->back();
