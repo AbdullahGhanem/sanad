@@ -64,8 +64,11 @@ in a mental-health product, safety and accuracy outrank engagement.
    (`/my-progress`): screening history, a latest-result + trend summary (PHQ-9 direction), and an
    inline SVG sparkline — plus **retroactive claiming** of anonymous sessions taken in the same
    browser session (by `guest_id`), so a student who screened before registering keeps that
-   history. Anonymous path intact (claiming only runs for an authed user). _Next slices:_
-   re-screening reminders (`reminder_enabled` already exists) and a richer chart.
+   history. Anonymous path intact (claiming only runs for an authed user). **Re-screening
+   reminders** are built: `app:send-screening-reminders` (scheduled daily) emails opted-in,
+   verified students who last screened beyond `config/reminders.php`'s interval; the interval
+   doubles as the cooldown (`last_reminded_at`) so a student is nudged at most once per period,
+   and a Profile-settings toggle lets them opt out. _Next slices:_ a richer interactive chart.
 7. **Referral & appointment workflow** — route high-severity students to the counseling center.
 
 ## Phase 3 — LATER · AI depth & scale  *(next focus)*

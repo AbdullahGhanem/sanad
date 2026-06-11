@@ -29,6 +29,12 @@
                 @endif
             </div>
 
+            <flux:checkbox
+                wire:model="reminderEnabled"
+                :label="__('Screening reminders')"
+                :description="__('Email me a gentle reminder to check in if I haven\'t screened in a while.')"
+            />
+
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
                     <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}</flux:button>
