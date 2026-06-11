@@ -38,6 +38,8 @@ return [
     'crisis_resolved_week_hint' => 'Closed this week',
     'no_notes_yet' => 'No notes yet.',
     'system_author' => 'System',
+    'referrals' => 'Referrals',
+    'referral' => 'Referral',
 
     // Resources - Screening Sessions
     'sessions' => 'Sessions',

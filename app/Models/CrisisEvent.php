@@ -44,6 +44,16 @@ class CrisisEvent extends Model
         return $this->hasMany(CounselorNote::class)->latest();
     }
 
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Referral::class);
+    }
+
+    public function hasReferral(): bool
+    {
+        return $this->referrals()->exists();
+    }
+
     /**
      * @param  Builder<CrisisEvent>  $query
      */

@@ -69,7 +69,14 @@ in a mental-health product, safety and accuracy outrank engagement.
    verified students who last screened beyond `config/reminders.php`'s interval; the interval
    doubles as the cooldown (`last_reminded_at`) so a student is nudged at most once per period,
    and a Profile-settings toggle lets them opt out. _Next slices:_ a richer interactive chart.
-7. **Referral & appointment workflow** — route high-severity students to the counseling center.
+7. **Referral & appointment workflow** — 🟡 **Started.** A counselor working a crisis event can
+   **Refer** the student to the counseling center, creating a `Referral` (status pending) that
+   copies the `anonymous_id` so it survives even if the crisis is later purged. A read-only
+   **Referrals** Filament resource tracks the lifecycle — **Schedule** an appointment
+   (`DateTimePicker` → `scheduled_at` + status scheduled), **Complete**, or **Decline** — with a
+   `ReferralStatus` enum and audit-logged transitions. The Refer action hides once a referral
+   exists. _Next slices:_ notify the counseling center on referral, and a student-initiated
+   "request a counselor" path.
 
 ## Phase 3 — LATER · AI depth & scale  *(next focus)*
 

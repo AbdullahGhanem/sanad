@@ -101,6 +101,23 @@ class CrisisEventsTable
                     'user_id' => auth()->id(),
                     'body' => $data['body'],
                 ])),
+            Action::make('refer')
+                ->label('Refer')
+                ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+                ->color('info')
+                ->modalHeading('Refer to the counseling center')
+                ->visible(fn (CrisisEvent $record): bool => ! $record->hasReferral())
+                ->schema([
+                    Textarea::make('reason')
+                        ->label('Reason for referral')
+                        ->rows(3),
+                ])
+                ->action(fn (array $data, CrisisEvent $record) => $record->referrals()->create([
+                    'anonymous_id' => $record->anonymous_id,
+                    'referred_by_id' => auth()->id(),
+                    'status' => \App\Enums\ReferralStatus::Pending,
+                    'reason' => $data['reason'] ?? null,
+                ])),
         ];
     }
 }

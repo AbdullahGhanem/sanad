@@ -38,6 +38,8 @@ return [
     'crisis_resolved_week_hint' => 'أُغلقت هذا الأسبوع',
     'no_notes_yet' => 'لا توجد ملاحظات بعد.',
     'system_author' => 'النظام',
+    'referrals' => 'الإحالات',
+    'referral' => 'إحالة',
 
     // Resources - Screening Sessions
     'sessions' => 'الجلسات',
