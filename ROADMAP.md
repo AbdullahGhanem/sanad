@@ -29,7 +29,13 @@ in a mental-health product, safety and accuracy outrank engagement.
 2. **Clinical audit trail** — install `spatie/laravel-activitylog`; log screenings, crisis
    events, and AI messages. (Spatie-first: do not hand-roll.)
 3. **Consent & data retention** — explicit versioned consent before screening + automated purge job.
-4. **AI output guardrail** — moderation pass on every `SanadChat` reply before it reaches the student.
+4. **AI output guardrail** — ✅ **Built.** Every `SanadChat` reply is moderated **before** it
+   reaches the student (moderate-first): `StreamChatResponse` now generates the full reply, runs
+   `ResponseGuardrailService` (a deterministic dosage/medication **rule** layer + a Claude
+   `ResponseModerator` structured-output classifier), then streams only the approved text — or a
+   supportive safe-fallback if blocked. Fails open with a logged warning when moderation is
+   unavailable (a blocked reply withholding support is itself harmful); `GUARDRAIL_AI_MODERATION`
+   is the ops/cost kill-switch for the AI layer.
 
 ## Phase 2 — NEXT · Counselor side & continuity of care
 
