@@ -12,6 +12,23 @@
         mediaRecorder: null,
         audioChunks: [],
         channel: '{{ $this->streamChannel }}',
+        streamWatchdog: null,
+        finalizeStream() {
+            clearTimeout(this.streamWatchdog);
+            $wire.finishStreaming().then(() => {
+                this.streamingText = '';
+                this.isStreaming = false;
+                this.isSending = false;
+                this.pendingMessage = '';
+                this.$nextTick(() => this.scrollToBottom());
+            });
+        },
+        armWatchdog() {
+            clearTimeout(this.streamWatchdog);
+            this.streamWatchdog = setTimeout(() => {
+                if (this.isSending || this.isStreaming) this.finalizeStream();
+            }, 20000);
+        },
         init() {
             this.$nextTick(() => this.scrollToBottom());
 
@@ -30,16 +47,10 @@
                         this.isSending = false;
                         this.isStreaming = true;
                         this.streamingText += e.delta ?? '';
+                        this.armWatchdog();
                         this.$nextTick(() => this.scrollToBottom());
                     })
-                    .listen('.stream_end', () => {
-                        $wire.finishStreaming().then(() => {
-                            this.streamingText = '';
-                            this.isStreaming = false;
-                            this.isSending = false;
-                            this.$nextTick(() => this.scrollToBottom());
-                        });
-                    });
+                    .listen('.stream_end', () => this.finalizeStream());
             }
         },
         sendOptimistic() {
@@ -52,6 +63,7 @@
             this.inputText = '';
 
             this.$nextTick(() => this.scrollToBottom());
+            this.armWatchdog();
 
             $wire.set('message', text).then(() => {
                 $wire.sendMessage().then(() => {

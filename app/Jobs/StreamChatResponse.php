@@ -46,43 +46,47 @@ class StreamChatResponse implements ShouldQueue
             $verdict = $guardrail->check($reply, $this->userMessage, $this->language);
 
             if ($verdict->blocked()) {
-                $context = [
+                $logContext = [
                     'session_id' => $this->chatSessionId,
                     'source' => $verdict->source,
                     'categories' => $verdict->categories,
                     'reason' => $verdict->reason,
                 ];
 
-                Log::channel('single')->warning('Guardrail blocked an AI reply.', $context);
-                activity('guardrail')->withProperties($context)->log('Guardrail blocked an AI reply');
+                Log::channel('single')->warning('Guardrail blocked an AI reply.', $logContext);
+                activity('guardrail')->withProperties($logContext)->log('Guardrail blocked an AI reply');
             }
 
             $text = $verdict->safe ? $reply : $this->safeFallback();
-
-            $this->streamApproved($channel, $text);
-            $this->persist($text);
         } catch (Throwable $e) {
             report($e);
-            $this->persist($this->errorFallback());
-            $this->broadcastEnd($channel);
+            $text = $this->errorFallback();
         }
+
+        // Persist first so the reply survives even when websockets are unavailable;
+        // the client reloads from the database once the stream ends.
+        $this->persist($text);
+
+        $this->broadcastApproved($channel, $text);
     }
 
     /**
      * Stream the approved text to the browser as token deltas, then signal completion.
+     *
+     * Best-effort: if broadcasting fails (e.g. Reverb is down), the message is already
+     * persisted, so the chat recovers via the client-side completion fallback.
      */
-    private function streamApproved(Channel $channel, string $text): void
+    private function broadcastApproved(Channel $channel, string $text): void
     {
-        foreach ($this->chunks($text) as $chunk) {
-            Broadcast::on($channel)->as('text_delta')->with(['delta' => $chunk])->sendNow();
+        try {
+            foreach ($this->chunks($text) as $chunk) {
+                Broadcast::on($channel)->as('text_delta')->with(['delta' => $chunk])->sendNow();
+            }
+
+            Broadcast::on($channel)->as('stream_end')->with(['reason' => 'stop'])->sendNow();
+        } catch (Throwable $e) {
+            report($e);
         }
-
-        $this->broadcastEnd($channel);
-    }
-
-    private function broadcastEnd(Channel $channel): void
-    {
-        Broadcast::on($channel)->as('stream_end')->with(['reason' => 'stop'])->sendNow();
     }
 
     /**

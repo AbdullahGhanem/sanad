@@ -80,6 +80,21 @@ class StreamChatResponseTest extends TestCase
         $this->assertStringContainsString('safe and helpful', $message->content);
     }
 
+    public function test_reply_is_persisted_even_when_broadcasting_fails(): void
+    {
+        SanadChat::fake(['You are not alone in this.']);
+        \Illuminate\Support\Facades\Broadcast::shouldReceive('on')->andThrow(new \RuntimeException('reverb down'));
+
+        (new StreamChatResponse('session-uuid', null, 'I feel low', 'en'))
+            ->handle(app(ContextInjectionService::class), app(ResponseGuardrailService::class));
+
+        $this->assertDatabaseHas('chat_messages', [
+            'session_id' => 'session-uuid',
+            'role' => 'assistant',
+            'content' => 'You are not alone in this.',
+        ]);
+    }
+
     public function test_job_persists_fallback_when_generation_fails(): void
     {
         SanadChat::fake(function () {
