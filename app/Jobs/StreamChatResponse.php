@@ -46,12 +46,15 @@ class StreamChatResponse implements ShouldQueue
             $verdict = $guardrail->check($reply, $this->userMessage, $this->language);
 
             if ($verdict->blocked()) {
-                Log::channel('single')->warning('Guardrail blocked an AI reply.', [
+                $context = [
                     'session_id' => $this->chatSessionId,
                     'source' => $verdict->source,
                     'categories' => $verdict->categories,
                     'reason' => $verdict->reason,
-                ]);
+                ];
+
+                Log::channel('single')->warning('Guardrail blocked an AI reply.', $context);
+                activity('guardrail')->withProperties($context)->log('Guardrail blocked an AI reply');
             }
 
             $text = $verdict->safe ? $reply : $this->safeFallback();

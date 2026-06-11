@@ -26,8 +26,12 @@ in a mental-health product, safety and accuracy outrank engagement.
    **real-time `broadcast`** channel — surfacing a live red toast in the counselor's Filament
    panel over Reverb. The student-side chat/screening crisis overlay remains the front-of-house
    takeover. _Future listeners (SMS/WhatsApp, counselor assignment, audit) hang off the same event._
-2. **Clinical audit trail** — install `spatie/laravel-activitylog`; log screenings, crisis
-   events, and AI messages. (Spatie-first: do not hand-roll.)
+2. **Clinical audit trail** — ✅ **Built.** `spatie/laravel-activitylog` via a reusable
+   `Auditable` trait on the safety/clinical models (crisis keywords & resources, knowledge
+   articles, coping exercises, recommendations, AI provider settings, crisis events, and User
+   role changes). Whitelists protect secrets/bloat (no `api_key`, no embedding vectors); guardrail
+   blocks are logged to the trail too. A **read-only** Filament "Audit Log" resource lets admins
+   review who changed what, when. (Spatie-first, not hand-rolled.)
 3. **Consent & data retention** — explicit versioned consent before screening + automated purge job.
 4. **AI output guardrail** — ✅ **Built.** Every `SanadChat` reply is moderated **before** it
    reaches the student (moderate-first): `StreamChatResponse` now generates the full reply, runs

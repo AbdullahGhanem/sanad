@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Recommendation extends Model
 {
     /** @use HasFactory<\Database\Factories\RecommendationFactory> */
-    use HasFactory;
+    use Auditable, HasFactory;
+
+    protected string $auditLogName = 'content';
 
     protected $fillable = [
         'title_ar',

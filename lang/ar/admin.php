@@ -27,6 +27,8 @@ return [
     'coping_exercise' => 'تمرين تأقلم',
     'knowledge_articles' => 'مقالات المعرفة',
     'knowledge_article' => 'مقال معرفي',
+    'audit_log' => 'سجل التدقيق',
+    'audit_entry' => 'إدخال تدقيق',
 
     // Resources - Screening Sessions
     'sessions' => 'الجلسات',

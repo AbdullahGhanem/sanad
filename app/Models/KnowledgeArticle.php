@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use App\Observers\KnowledgeArticleObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,7 +13,16 @@ use Illuminate\Database\Eloquent\Model;
 class KnowledgeArticle extends Model
 {
     /** @use HasFactory<\Database\Factories\KnowledgeArticleFactory> */
-    use HasFactory;
+    use Auditable, HasFactory;
+
+    protected string $auditLogName = 'content';
+
+    /**
+     * Whitelist content fields only — never log the embedding vectors.
+     *
+     * @var list<string>
+     */
+    protected array $auditLogOnly = ['category', 'title_en', 'title_ar', 'body_en', 'body_ar', 'is_active'];
 
     protected $fillable = [
         'category',

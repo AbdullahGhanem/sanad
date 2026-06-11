@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CopingTheme;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 class CopingExercise extends Model
 {
     /** @use HasFactory<\Database\Factories\CopingExerciseFactory> */
-    use HasFactory;
+    use Auditable, HasFactory;
+
+    protected string $auditLogName = 'content';
 
     protected $fillable = [
         'type',

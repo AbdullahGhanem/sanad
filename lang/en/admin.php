@@ -27,6 +27,8 @@ return [
     'coping_exercise' => 'Coping Exercise',
     'knowledge_articles' => 'Knowledge Articles',
     'knowledge_article' => 'Knowledge Article',
+    'audit_log' => 'Audit Log',
+    'audit_entry' => 'Audit Entry',
 
     // Resources - Screening Sessions
     'sessions' => 'Sessions',

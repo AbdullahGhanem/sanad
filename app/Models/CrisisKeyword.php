@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CrisisKeyword extends Model
 {
     /** @use HasFactory<\Database\Factories\CrisisKeywordFactory> */
-    use HasFactory;
+    use Auditable, HasFactory;
+
+    protected string $auditLogName = 'crisis-config';
 
     protected $fillable = [
         'phrase',

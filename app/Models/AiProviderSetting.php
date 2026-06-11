@@ -2,13 +2,23 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AiProviderSetting extends Model
 {
     /** @use HasFactory<\Database\Factories\AiProviderSettingFactory> */
-    use HasFactory;
+    use Auditable, HasFactory;
+
+    protected string $auditLogName = 'ai-config';
+
+    /**
+     * Never log the encrypted api_key.
+     *
+     * @var list<string>
+     */
+    protected array $auditLogOnly = ['provider', 'model', 'is_active'];
 
     protected $fillable = [
         'provider',
