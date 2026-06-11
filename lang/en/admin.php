@@ -36,6 +36,8 @@ return [
     'crisis_in_progress_hint' => 'Acknowledged, not yet resolved',
     'crisis_resolved_week' => 'Resolved (7 days)',
     'crisis_resolved_week_hint' => 'Closed this week',
+    'no_notes_yet' => 'No notes yet.',
+    'system_author' => 'System',
 
     // Resources - Screening Sessions
     'sessions' => 'Sessions',

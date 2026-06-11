@@ -36,6 +36,8 @@ return [
     'crisis_in_progress_hint' => 'تم استلامها ولم تُحل بعد',
     'crisis_resolved_week' => 'تم حلها (7 أيام)',
     'crisis_resolved_week_hint' => 'أُغلقت هذا الأسبوع',
+    'no_notes_yet' => 'لا توجد ملاحظات بعد.',
+    'system_author' => 'النظام',
 
     // Resources - Screening Sessions
     'sessions' => 'الجلسات',

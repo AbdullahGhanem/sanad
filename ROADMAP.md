@@ -55,8 +55,10 @@ in a mental-health product, safety and accuracy outrank engagement.
    `CounselorNote`s. Triage changes flow into the audit trail automatically. The **dashboard**
    now shows a `CrisisTriageStats` overview (open / in-progress / resolved-this-week) and a
    `CrisisQueue` table widget — the unresolved queue with the same triage actions inline, polling
-   every 30s (the Phase 1 broadcast already gives instant toasts). _Next slices:_ a notes-thread
-   view, true broadcast-driven queue refresh, and longitudinal per-student history (item 6).
+   every 30s (the Phase 1 broadcast already gives instant toasts). The **Notes** action opens the
+   full counselor-note thread (author + relative time) above an add-note field, shared by the
+   resource table and the queue widget. _Next slices:_ true broadcast-driven queue refresh, and
+   longitudinal per-student history (item 6).
 6. **Longitudinal tracking** — optional student accounts linking sessions over time + a
    student-facing progress chart. Keep the anonymous path intact.
 7. **Referral & appointment workflow** — route high-severity students to the counseling center.

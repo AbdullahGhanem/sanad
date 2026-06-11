@@ -82,14 +82,18 @@ class CrisisEventsTable
                 ->requiresConfirmation()
                 ->visible(fn (CrisisEvent $record): bool => ! $record->isResolved())
                 ->action(fn (CrisisEvent $record) => $record->resolve(auth()->user())),
-            Action::make('addNote')
-                ->label('Add note')
-                ->icon(Heroicon::OutlinedPencilSquare)
+            Action::make('notes')
+                ->label('Notes')
+                ->icon(Heroicon::OutlinedChatBubbleLeftRight)
                 ->color('gray')
-                ->modalHeading('Counselor note')
+                ->modalHeading('Counselor notes')
+                ->modalContent(fn (CrisisEvent $record) => view('filament.crisis-notes-thread', [
+                    'notes' => $record->notes()->with('author')->get(),
+                ]))
+                ->modalSubmitActionLabel('Add note')
                 ->schema([
                     Textarea::make('body')
-                        ->label('Note')
+                        ->label('Add a note')
                         ->required()
                         ->rows(3),
                 ])
