@@ -99,6 +99,8 @@ class ChatInterface extends Component
         if ($isCrisis) {
             $crisisService->logCrisisEvent(
                 session('guest_id', Str::uuid()->toString()),
+                'chat',
+                $this->language,
             );
             $this->showCrisisOverlay = true;
         }

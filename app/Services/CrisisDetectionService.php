@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Jobs\CrisisNotificationJob;
+use App\Events\CrisisDetected;
 use App\Models\CrisisEvent;
 use App\Models\CrisisKeyword;
 
@@ -37,9 +37,9 @@ class CrisisDetectionService
     }
 
     /**
-     * Log a crisis event and dispatch admin notification.
+     * Record a crisis event and dispatch the decoupled escalation pipeline.
      */
-    public function logCrisisEvent(string $anonymousId, string $source = 'chat'): CrisisEvent
+    public function logCrisisEvent(string $anonymousId, string $source = 'chat', ?string $language = null): CrisisEvent
     {
         $event = CrisisEvent::create([
             'anonymous_id' => $anonymousId,
@@ -47,7 +47,7 @@ class CrisisDetectionService
             'severity' => 'high',
         ]);
 
-        CrisisNotificationJob::dispatch($source, 'high');
+        CrisisDetected::dispatch($event, $language);
 
         return $event;
     }

@@ -2,8 +2,11 @@
 
 namespace App\Notifications;
 
+use Filament\Notifications\Notification as FilamentNotification;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -21,7 +24,20 @@ class CrisisDetectedNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['mail', 'database', 'broadcast'];
+    }
+
+    /**
+     * Real-time alert pushed to a counselor's admin panel the instant a crisis is detected.
+     */
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return FilamentNotification::make()
+            ->danger()
+            ->icon(Heroicon::ExclamationTriangle)
+            ->title('Crisis detected')
+            ->body("A {$this->severity}-severity crisis was detected from {$this->source}. Review the crisis events dashboard.")
+            ->getBroadcastMessage();
     }
 
     public function toMail(object $notifiable): MailMessage

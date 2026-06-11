@@ -19,9 +19,13 @@ in a mental-health product, safety and accuracy outrank engagement.
 
 ## Phase 1 — NOW · Safety hardening & trust
 
-1. **Real-time crisis escalation pipeline** — on `severe` / keyword hit: write `CrisisEvent`,
-   fire a queued counselor notification (email/WhatsApp/SMS), switch chat UI to a crisis
-   takeover state. Decouple via a `CrisisDetected` event + listeners.
+1. **Real-time crisis escalation pipeline** — ✅ **Built.** On a keyword hit (chat or screening)
+   the `CrisisDetectionService` records the `CrisisEvent` and fires a decoupled `CrisisDetected`
+   domain event; the synchronous `EscalateCrisis` listener dispatches the queued
+   `CrisisNotificationJob`, which sends `CrisisDetectedNotification` over mail + database + a
+   **real-time `broadcast`** channel — surfacing a live red toast in the counselor's Filament
+   panel over Reverb. The student-side chat/screening crisis overlay remains the front-of-house
+   takeover. _Future listeners (SMS/WhatsApp, counselor assignment, audit) hang off the same event._
 2. **Clinical audit trail** — install `spatie/laravel-activitylog`; log screenings, crisis
    events, and AI messages. (Spatie-first: do not hand-roll.)
 3. **Consent & data retention** — explicit versioned consent before screening + automated purge job.

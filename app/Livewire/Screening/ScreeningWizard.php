@@ -7,6 +7,7 @@ use App\Models\CrisisHelpResource;
 use App\Models\Questionnaire;
 use App\Models\ScreeningSession;
 use App\Services\CombinedScoringService;
+use App\Services\CrisisDetectionService;
 use App\Services\EnsembleScoringService;
 use App\Services\Gad7ScoringService;
 use App\Services\Phq9ScoringService;
@@ -258,11 +259,11 @@ class ScreeningWizard extends Component
 
     private function logCrisisEvent(): void
     {
-        \App\Models\CrisisEvent::create([
-            'anonymous_id' => session('guest_id', Str::uuid()->toString()),
-            'source' => 'screening',
-            'severity' => 'high',
-        ]);
+        app(CrisisDetectionService::class)->logCrisisEvent(
+            session('guest_id', Str::uuid()->toString()),
+            'screening',
+            app()->getLocale(),
+        );
     }
 
     private function completeScreening(): void
