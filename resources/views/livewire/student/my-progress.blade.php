@@ -6,6 +6,29 @@
         </flux:button>
     </div>
 
+    {{-- Request a counselor (student-initiated referral) --}}
+    @if ($this->hasPendingRequest)
+        <div class="mb-6 flex items-center gap-3 rounded-xl border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950">
+            <span class="text-2xl">✅</span>
+            <flux:text class="text-teal-800 dark:text-teal-200">{{ __('progress.request_pending') }}</flux:text>
+        </div>
+    @else
+        <div class="mb-6 flex flex-col items-start justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900 sm:flex-row sm:items-center">
+            <div>
+                <div class="font-medium">{{ __('progress.request_title') }}</div>
+                <flux:text class="text-sm text-zinc-500">{{ __('progress.request_body') }}</flux:text>
+            </div>
+            <flux:button
+                variant="primary"
+                wire:click="requestCounselor"
+                wire:confirm="{{ __('progress.request_confirm') }}"
+                wire:loading.attr="disabled"
+            >
+                {{ __('progress.request_counselor') }}
+            </flux:button>
+        </div>
+    @endif
+
     @if ($this->sessions->isEmpty())
         <div class="rounded-xl border border-zinc-200 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-900">
             <div class="mb-3 text-4xl">📈</div>

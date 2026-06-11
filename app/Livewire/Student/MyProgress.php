@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Student;
 
+use App\Enums\ReferralStatus;
+use App\Models\Referral;
 use App\Models\ScreeningSession;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -44,6 +46,39 @@ class MyProgress extends Component
     public function isRtl(): bool
     {
         return app()->getLocale() === 'ar';
+    }
+
+    /**
+     * Whether the student already has an open self-requested counselor referral.
+     */
+    #[Computed]
+    public function hasPendingRequest(): bool
+    {
+        return Referral::query()
+            ->where('user_id', Auth::id())
+            ->whereNull('referred_by_id')
+            ->open()
+            ->exists();
+    }
+
+    /**
+     * Raise a self-initiated referral so the counseling center reaches out.
+     */
+    public function requestCounselor(): void
+    {
+        if ($this->hasPendingRequest) {
+            return;
+        }
+
+        Referral::create([
+            'user_id' => Auth::id(),
+            'anonymous_id' => session('guest_id'),
+            'referred_by_id' => null,
+            'status' => ReferralStatus::Pending,
+            'reason' => 'Student-requested counselor support.',
+        ]);
+
+        unset($this->hasPendingRequest);
     }
 
     /**

@@ -18,10 +18,10 @@ class ReferralsTable
     {
         return $table
             ->columns([
-                TextColumn::make('anonymous_id')
+                TextColumn::make('student_name')
                     ->label('Student')
-                    ->formatStateUsing(fn (?string $state): string => $state ? substr($state, 0, 8) : '—')
-                    ->searchable(),
+                    ->state(fn (Referral $record): string => $record->student?->name
+                        ?? ('Anonymous '.substr((string) $record->anonymous_id, 0, 8))),
                 TextColumn::make('crisisEvent.severity')
                     ->label('Severity')
                     ->badge()
@@ -30,9 +30,10 @@ class ReferralsTable
                     ->badge()
                     ->formatStateUsing(fn (ReferralStatus $state): string => $state->label())
                     ->color(fn (ReferralStatus $state): string => $state->color()),
-                TextColumn::make('referredBy.name')
+                TextColumn::make('referred_by_label')
                     ->label('Referred by')
-                    ->placeholder('—'),
+                    ->state(fn (Referral $record): string => $record->referredBy?->name
+                        ?? ($record->isSelfRequested() ? 'Self-requested' : '—')),
                 TextColumn::make('scheduled_at')
                     ->dateTime()
                     ->placeholder('Not scheduled')

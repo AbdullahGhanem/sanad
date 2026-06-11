@@ -77,8 +77,11 @@ in a mental-health product, safety and accuracy outrank engagement.
    `ReferralStatus` enum and audit-logged transitions. The Refer action hides once a referral
    exists. On creation, a `ReferralObserver` **notifies the counseling center** — counselor staff
    (excluding the referrer) get a mail + database + live broadcast toast, and an optional shared
-   `REFERRAL_CENTER_EMAIL` inbox is cc'd (channels adapt per notifiable). _Next slices:_ a
-   student-initiated "request a counselor" path.
+   `REFERRAL_CENTER_EMAIL` inbox is cc'd (channels adapt per notifiable). Students can also
+   **self-request** a counselor from the My Progress page — the referral carries their `user_id`
+   (so the center can reach them) with a null referrer; duplicate open requests are blocked, and
+   the center is notified through the same observer. The Referrals resource shows the student's
+   name for self-requests and "Self-requested" as the source. ✅ **Item 7 complete.**
 
 ## Phase 3 — LATER · AI depth & scale  *(next focus)*
 

@@ -22,6 +22,7 @@ class Referral extends Model
 
     protected $fillable = [
         'crisis_event_id',
+        'user_id',
         'anonymous_id',
         'referred_by_id',
         'status',
@@ -45,6 +46,19 @@ class Referral extends Model
     public function referredBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'referred_by_id');
+    }
+
+    /**
+     * The student the referral is for (set when self-requested).
+     */
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function isSelfRequested(): bool
+    {
+        return $this->referred_by_id === null && $this->user_id !== null;
     }
 
     /**
