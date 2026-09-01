@@ -21,6 +21,30 @@ OUT = os.environ.get(
 )
 
 
+# Table 4 — DistressAnalyzer vs clinician labels. The five classes are the agent's
+# output schema (app/Ai/Agents/DistressAnalyzer.php). Paste the output of
+# `php artisan app:evaluate-distress labelled.csv` here; None renders as "—" so the
+# paper never carries a number that was not measured.
+TABLE4 = {
+    "Minimal":            {"precision": None, "recall": None, "f1": None, "n": None},
+    "Mild":               {"precision": None, "recall": None, "f1": None, "n": None},
+    "Moderate":           {"precision": None, "recall": None, "f1": None, "n": None},
+    "Moderately severe":  {"precision": None, "recall": None, "f1": None, "n": None},
+    "Severe":             {"precision": None, "recall": None, "f1": None, "n": None},
+    "Weighted average":   {"precision": None, "recall": None, "f1": None, "n": None},
+}
+TABLE4_AGREEMENT = None   # overall agreement in percent, e.g. 84.2
+
+
+def _num(value, fmt="{:.2f}"):
+    return "—" if value is None else fmt.format(value)
+
+
+AGREEMENT = _num(TABLE4_AGREEMENT, "{:.1f}%")
+MILD_RECALL = _num(TABLE4["Mild"]["recall"])
+TABLE4_N = _num(TABLE4["Weighted average"]["n"], "{:,}")
+
+
 def cover(doc):
     sec = doc.sections[0]
     sec.top_margin = Inches(1.0); sec.bottom_margin = Inches(1.0)
@@ -98,8 +122,8 @@ def abstract(doc):
          "chatbot. Deterministic PHP scoring services compute PHQ-9/GAD-7 severity, and a confidence-weighted "
          "70/30 ensemble merges the questionnaire and language-model signals conservatively. The system was "
          "evaluated with 120 students over a four-week pilot."),
-        ("Results.", "The DistressAnalyzer agreed with clinician labels on 84.2% of held-out free-text "
-         "responses (n = 240). In the pilot, 91% of enrolled students completed the full screening, the "
+        ("Results.", f"The DistressAnalyzer agreed with clinician labels on {AGREEMENT} of held-out free-text "
+         f"responses (n = {TABLE4_N}). In the pilot, 91% of enrolled students completed the full screening, the "
          "measured moderate-to-severe rate (66.7%) sat within one percentage point of the published national "
          "figure (68.1%), overall satisfaction reached 88%, and — most strikingly — 79% of participants "
          "reported that Sanad was the first structured mental-health resource they had ever used."),
@@ -141,8 +165,8 @@ def abstract(doc):
          "إشارتَي الاستبيان ونموذج اللغة دمجاً متحفِّظاً لا يُخفِّض شدّة الحالة أبداً. وقد جُرِّب النظام مع 120 طالباً "
          "على مدى أربعة أسابيع."),
         ("النتائج:",
-         "اتّفق «مُحلِّل الضائقة» مع تصنيفات أخصائيٍّ إكلينيكيّ في 84.2% من النصوص الحرّة المحجوزة للاختبار (وعددها "
-         "240 نصاً). وخلال التجربة، أكمل 91% من الطلاب المُسجَّلين الفحصَ كاملاً، وجاءت نسبة الضائقة المتوسطة إلى "
+         f"اتّفق «مُحلِّل الضائقة» مع تصنيفات أخصائيٍّ إكلينيكيّ في {AGREEMENT} من النصوص الحرّة المحجوزة للاختبار (وعددها "
+         f"{TABLE4_N} نصاً). وخلال التجربة، أكمل 91% من الطلاب المُسجَّلين الفحصَ كاملاً، وجاءت نسبة الضائقة المتوسطة إلى "
          "الشديدة (66.7%) ضمن نقطةٍ مئويةٍ واحدة من الرقم الوطني المنشور (68.1%)، وبلغ متوسّط رضا المستخدمين 88%، "
          "والأهمّ من ذلك أن 79% من المشاركين صرّحوا بأن «سند» كان أوّل مورد منظَّم للصحة النفسية يستخدمونه على الإطلاق."),
         ("الخاتمة:",
@@ -649,13 +673,14 @@ def results(doc):
 
     S.add_heading(doc, "6.1 Distress-Classification Performance", level=2)
     S.add_body(doc,
-        "The DistressAnalyzer agent was evaluated against a held-out set of 240 free-text responses — 60 per "
-        "severity class — each independently labelled by a clinician. The agent's classification agreed with "
-        "the clinician label on 84.2% of responses (weighted). As Table 4 shows, agreement was highest at the "
+        f"The DistressAnalyzer agent was evaluated against a held-out set of {TABLE4_N} free-text responses, "
+        "each independently labelled by a clinician with one of the five severity classes the agent emits "
+        "(minimal, mild, moderate, moderately severe, severe). The agent's classification agreed with "
+        f"the clinician label on {AGREEMENT} of responses (weighted). As Table 4 shows, agreement was highest at the "
         "two extremes — clear non-distress and clear severe distress — and lowest for the mild class, where "
-        "recall fell to 0.80. This mirrors a consistent finding in Arabic sentiment and affect analysis: the "
+        f"recall fell to {MILD_RECALL}. This mirrors a consistent finding in Arabic sentiment and affect analysis: the "
         "boundary between neutral and mildly negative is genuinely hard to detect in colloquial Egyptian "
-        "Arabic, which leans heavily on understatement and indirect expression. We do not regard 0.80 recall "
+        f"Arabic, which leans heavily on understatement and indirect expression. We do not regard {MILD_RECALL} recall "
         "on the mild class as acceptable for production, and improving it is the first technical priority for "
         "the next iteration. It is worth restating that this classifier is never the sole determinant of a "
         "student's severity: the conservative ensemble (Section 4.3) means a missed mild case is still carried "
@@ -663,13 +688,10 @@ def results(doc):
     S.add_table(doc,
         ["Severity class", "Precision", "Recall", "F1-score", "n"],
         [
-            ["No distress", "0.91", "0.88", "0.89", "60"],
-            ["Mild distress", "0.82", "0.80", "0.81", "60"],
-            ["Moderate distress", "0.83", "0.86", "0.84", "60"],
-            ["Severe distress", "0.87", "0.88", "0.87", "60"],
-            ["Weighted average", "0.86", "0.85", "0.84", "240"],
+            [label, _num(m["precision"]), _num(m["recall"]), _num(m["f1"]), _num(m["n"], "{:,}")]
+            for label, m in TABLE4.items()
         ],
-        caption="Table 4. DistressAnalyzer classification performance against clinician labels (n = 240).",
+        caption=f"Table 4. DistressAnalyzer classification performance against clinician labels (n = {TABLE4_N}).",
         col_widths=[2.1, 1.2, 1.0, 1.1, 0.8])
 
     S.add_heading(doc, "6.2 Screening Outcomes", level=2)
@@ -739,12 +761,12 @@ def limitations(doc):
         "satisfaction — not clinical effectiveness. It provides no evidence that using Sanad improves mental "
         "health, and it should not be read as making that claim.",
         "Classifier ceiling. Distress classification depends on a third-party LLM whose behaviour can change "
-        "between versions, and whose 0.80 recall on the mild class indicates a real weakness at the most "
+        f"between versions, and whose {MILD_RECALL} recall on the mild class indicates a real weakness at the most "
         "ambiguous boundary. The conservative ensemble limits the harm of this but does not remove it.",
         "Self-report and social desirability. Both the screening instruments and the satisfaction survey are "
         "self-reported and therefore subject to recall and social-desirability effects.",
         "Construct validity of the agreement metric. Clinician labels on short free-text responses are "
-        "themselves imperfect, so the 84.2% figure measures agreement with a fallible reference rather than "
+        f"themselves imperfect, so the {AGREEMENT} figure measures agreement with a fallible reference rather than "
         "ground truth.",
         "Generalisability of language performance. Egyptian Arabic is one dialect among many; performance on "
         "Gulf, Levantine, or Maghrebi varieties was not assessed and should not be assumed.",
@@ -759,7 +781,7 @@ def limitations(doc):
 def conclusion(doc):
     S.add_heading(doc, "8. Conclusion and Future Work", level=1, rule=True)
     S.add_body(doc,
-        "Measured purely on its engineering metrics, Sanad performed reasonably for a first prototype: 84.2% "
+        f"Measured purely on its engineering metrics, Sanad performed reasonably for a first prototype: {AGREEMENT} "
         "agreement between the distress classifier and clinician labels, 91% screening completion, and 88% "
         "user satisfaction. Those are acceptable numbers for an early-stage system. But the finding that "
         "matters is not technical. It is that 79% of the students who used Sanad had never before interacted "
