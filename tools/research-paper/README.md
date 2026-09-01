@@ -44,3 +44,21 @@ python3 -c "from pypdf import PdfReader; print(len(PdfReader('/tmp/Sanad_Mental_
 ## After rebuilding
 
 Open in Word → right-click the Table of Contents → **Update Field** to populate it.
+
+## Classifier evaluation (Table 4)
+
+Table 4 must come from a real run, not hand-typed numbers.
+
+1. Copy `distress-eval-template.csv`, delete the two example rows, and add one row per
+   free-text response. `label` is the clinician's severity and must be one of
+   `minimal`, `mild`, `moderate`, `moderately_severe`, `severe`. Aim for at least
+   100 rows per class. `labeller_notes` is free text and is ignored by the tool.
+2. Run the agent over the file (each row is one LLM call):
+
+   ```bash
+   php artisan app:evaluate-distress path/to/labelled.csv --out=path/to/predictions.csv
+   ```
+
+3. Copy the printed precision/recall/F1 table into `build.py` (Table 4), and use
+   `predictions.csv` (one row per text, `correct` = 0/1) for the error analysis of the
+   mild class.
